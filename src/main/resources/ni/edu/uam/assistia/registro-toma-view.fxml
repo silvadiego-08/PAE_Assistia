@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.edu.uam.assistia.RegistroTomaController"
+      spacing="12.0">
+    <padding>
+        <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
+    </padding>
+
+    <Label text="Registro de tomas" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="8.0" vgap="8.0">
+        <Label text="Paciente:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="pacienteCombo" prefWidth="320.0"
+                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Detalle de tratamiento:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="detalleCombo" prefWidth="360.0"
+                  GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+        <Label text="Fecha:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <DatePicker fx:id="fechaPicker" prefWidth="160.0"
+                    GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Hora (HH:mm):" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <TextField fx:id="horaField" prefWidth="100.0"
+                   GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+        <Label text="Observacion:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="observacionField" prefWidth="360.0"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="3"/>
+    </GridPane>
+
+    <HBox spacing="8.0" alignment="CENTER_LEFT">
+        <Button text="Programar" onAction="#onProgramar" defaultButton="true"/>
+        <Button text="Marcar como realizada" onAction="#onMarcarRealizada"/>
+        <Label fx:id="mensajeLabel" wrapText="true"/>
+    </HBox>
+
+    <TableView fx:id="tablaPendientes" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colMedicamento" text="Medicamento" prefWidth="220.0"/>
+            <TableColumn fx:id="colHorario" text="Horario" prefWidth="170.0"/>
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="110.0"/>
+            <TableColumn fx:id="colObservacion" text="Observacion" prefWidth="300.0"/>
+        </columns>
+    </TableView>
+</VBox>
