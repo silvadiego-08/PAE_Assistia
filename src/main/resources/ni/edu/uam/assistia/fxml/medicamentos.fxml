@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="12" style="-fx-font-size: 16px;"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.edu.uam.assistia.controller.MedicamentoController">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <Label text="Catálogo de medicamentos" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="8">
+        <columnConstraints>
+            <ColumnConstraints minWidth="180"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Nombre *" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtNombre" promptText="Ej. Paracetamol" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Principio activo *" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtPrincipioActivo" promptText="Ej. Paracetamol" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Presentación *" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtPresentacion" promptText="Ej. Tableta" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Concentración *" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtConcentracion" promptText="Ej. 500 mg" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox fx:id="barraAcciones" spacing="10">
+        <Button text="Guardar" onAction="#onGuardar"/>
+        <Button text="Actualizar" onAction="#onActualizar"/>
+        <Button text="Eliminar" onAction="#onEliminar"/>
+        <Button text="Limpiar" onAction="#onLimpiar"/>
+    </HBox>
+
+    <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="220"/>
+            <TableColumn fx:id="colPrincipio" text="Principio activo" prefWidth="220"/>
+            <TableColumn fx:id="colPresentacion" text="Presentación" prefWidth="160"/>
+            <TableColumn fx:id="colConcentracion" text="Concentración" prefWidth="160"/>
+        </columns>
+    </TableView>
+</VBox>
