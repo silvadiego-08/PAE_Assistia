@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ni.edu.uam.assistia.TratamientoController"
+            prefWidth="1000"
+            prefHeight="700">
+
+    <top>
+        <VBox spacing="8" style="-fx-background-color: #E8EAF6;">
+            <padding>
+                <Insets top="18" right="20" bottom="18" left="20"/>
+            </padding>
+
+            <Label text="PAE Assistia - Gestión de Tratamientos"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <Label text="Registro y seguimiento de tratamientos médicos"/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <content>
+                <VBox spacing="15">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+
+                    <Label text="Datos del tratamiento"
+                           style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+                    <GridPane hgap="12" vgap="12">
+                        <Label text="ID Paciente:"
+                               GridPane.rowIndex="0"
+                               GridPane.columnIndex="0"/>
+
+                        <TextField fx:id="txtPacienteId"
+                                   promptText="Ej. 1"
+                                   GridPane.rowIndex="0"
+                                   GridPane.columnIndex="1"/>
+
+                        <Label text="ID Médico:"
+                               GridPane.rowIndex="0"
+                               GridPane.columnIndex="2"/>
+
+                        <TextField fx:id="txtMedicoId"
+                                   promptText="Ej. 2"
+                                   GridPane.rowIndex="0"
+                                   GridPane.columnIndex="3"/>
+
+                        <Label text="Fecha de inicio:"
+                               GridPane.rowIndex="1"
+                               GridPane.columnIndex="0"/>
+
+                        <DatePicker fx:id="dpInicio"
+                                    GridPane.rowIndex="1"
+                                    GridPane.columnIndex="1"/>
+
+                        <Label text="Fecha de fin:"
+                               GridPane.rowIndex="1"
+                               GridPane.columnIndex="2"/>
+
+                        <DatePicker fx:id="dpFin"
+                                    GridPane.rowIndex="1"
+                                    GridPane.columnIndex="3"/>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <Label text="Medicamentos del tratamiento"
+                           style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+                    <HBox spacing="10">
+                        <TextField fx:id="txtMedicamentoId"
+                                   promptText="ID Medicamento"/>
+
+                        <TextField fx:id="txtDosis"
+                                   promptText="Dosis"/>
+
+                        <ComboBox fx:id="cbUnidad"
+                                  promptText="Unidad"
+                                  prefWidth="140"/>
+
+                        <TextField fx:id="txtInstrucciones"
+                                   promptText="Instrucciones"
+                                   HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <HBox spacing="10">
+                        <Button fx:id="btnAgregar"
+                                text="Agregar medicamento"
+                                onAction="#agregarMedicamento"/>
+
+                        <Button text="Quitar medicamento"
+                                onAction="#quitarMedicamento"/>
+                    </HBox>
+
+                    <TableView fx:id="tablaDetalles"
+                               prefHeight="180">
+                        <columns>
+                            <TableColumn fx:id="colMedicamento"
+                                         text="ID Medicamento"
+                                         prefWidth="150"/>
+
+                            <TableColumn fx:id="colDosis"
+                                         text="Dosis"
+                                         prefWidth="120"/>
+
+                            <TableColumn fx:id="colUnidad"
+                                         text="Unidad"
+                                         prefWidth="120"/>
+
+                            <TableColumn fx:id="colInstrucciones"
+                                         text="Instrucciones"
+                                         prefWidth="350"/>
+                        </columns>
+                    </TableView>
+
+                    <Separator/>
+
+                    <Label text="Acciones"
+                           style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+                    <HBox spacing="10">
+                        <Button fx:id="btnGuardar"
+                                text="Guardar"
+                                onAction="#guardarTratamiento"/>
+
+                        <Button fx:id="btnActualizar"
+                                text="Actualizar"
+                                onAction="#actualizarTratamiento"/>
+
+                        <Button fx:id="btnDesactivar"
+                                text="Desactivar"
+                                onAction="#desactivarTratamiento"/>
+
+                        <Button text="Limpiar"
+                                onAction="#limpiar"/>
+
+                        <Button text="Recargar"
+                                onAction="#cargarTratamientos"/>
+                    </HBox>
+
+                    <Separator/>
+
+                    <Label text="Consultar medicamentos activos"
+                           style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+                    <HBox spacing="10">
+                        <TextField fx:id="txtBuscarPaciente"
+                                   promptText="ID del paciente"/>
+
+                        <Button text="Buscar medicamentos activos"
+                                onAction="#buscarMedicamentosActivos"/>
+                    </HBox>
+
+                    <Label text="Tratamientos registrados"
+                           style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
+
+                    <ListView fx:id="listaTratamientos"
+                              prefHeight="180"/>
+
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox style="-fx-background-color: #E8EAF6;">
+            <padding>
+                <Insets top="12" right="20" bottom="12" left="20"/>
+            </padding>
+
+            <Label fx:id="lblEstado"
+                   text="Sistema listo."/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

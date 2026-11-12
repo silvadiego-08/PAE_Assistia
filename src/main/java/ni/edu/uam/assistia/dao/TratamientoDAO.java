@@ -27,7 +27,7 @@ public class TratamientoDAO {
 
             try (InputStream archivo = TratamientoDAO.class
                     .getClassLoader()
-                    .getResourceAsStream("Hibernate.properties")) {
+                    .getResourceAsStream("hibernate.properties")) {
 
                 if (archivo == null) {
                     throw new IllegalStateException(
