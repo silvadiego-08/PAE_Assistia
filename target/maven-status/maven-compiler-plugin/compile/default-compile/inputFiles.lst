@@ -1,7 +1,10 @@
 C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\module-info.java
+C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\controller\CuidadorController.java
 C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\HelloApplication.java
 C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\HelloController.java
 C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\Launcher.java
 C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\model\AsignacionCuidador.java
 C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\model\Cuidador.java
 C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\model\Paciente.java
+C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\persistence\CuidadorDao.java
+C:\Users\diego\OneDrive\Documentos\PAE\ProyectoFinal\Assistia\src\main\java\ni\edu\uam\assistia\persistence\HibernateConfig.java

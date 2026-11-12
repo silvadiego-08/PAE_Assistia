@@ -1,0 +1,4 @@
+
+DB_URL=jdbc:postgresql://localhost:5432/assistia
+DB_USER=assistia_local
+DB_PASSWORD=

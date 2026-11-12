@@ -1,7 +1,12 @@
+ni\edu\uam\assistia\controller\CuidadorController$1.class
 ni\edu\uam\assistia\model\Cuidador.class
 ni\edu\uam\assistia\model\Paciente.class
+ni\edu\uam\assistia\controller\CuidadorController$Datos.class
+ni\edu\uam\assistia\controller\CuidadorController.class
+ni\edu\uam\assistia\persistence\CuidadorDao.class
 module-info.class
 ni\edu\uam\assistia\Launcher.class
 ni\edu\uam\assistia\model\AsignacionCuidador.class
 ni\edu\uam\assistia\HelloApplication.class
+ni\edu\uam\assistia\persistence\HibernateConfig.class
 ni\edu\uam\assistia\HelloController.class

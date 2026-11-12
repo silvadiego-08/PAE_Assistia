@@ -1,8 +1,10 @@
 package ni.edu.uam.assistia.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(
         name = "asignaciones_cuidador",
         uniqueConstraints = @UniqueConstraint(

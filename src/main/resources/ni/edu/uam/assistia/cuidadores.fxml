@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="12">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+    <Label text="Cuidadores" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <VBox fx:id="contenido" spacing="12" VBox.vgrow="ALWAYS">
+        <GridPane hgap="12" vgap="8">
+            <Label text="Nombre"/>
+            <TextField fx:id="nombre" GridPane.columnIndex="1" prefWidth="320"/>
+            <Label text="Teléfono" GridPane.rowIndex="1"/>
+            <TextField fx:id="telefono" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label text="Correo" GridPane.rowIndex="2"/>
+            <TextField fx:id="correo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+        <HBox spacing="8">
+            <Button text="Guardar" onAction="#guardar"/>
+            <Button text="Actualizar" onAction="#actualizar"/>
+            <Button text="Eliminar" onAction="#eliminar"/>
+            <Button text="Limpiar" onAction="#limpiar"/>
+            <Button text="Recargar" onAction="#recargar"/>
+        </HBox>
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="215"/>
+                <TableColumn fx:id="columnaTelefono" text="Teléfono" prefWidth="140"/>
+                <TableColumn fx:id="columnaCorreo" text="Correo" prefWidth="240"/>
+            </columns>
+            <placeholder><Label text="No hay cuidadores para mostrar."/></placeholder>
+        </TableView>
+    </VBox>
+    <Label fx:id="estado" wrapText="true"/>
+</VBox>
