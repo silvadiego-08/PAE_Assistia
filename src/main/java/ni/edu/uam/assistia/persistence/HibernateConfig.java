@@ -8,12 +8,22 @@ import java.nio.file.Path;
 import java.util.Properties;
 import ni.edu.uam.assistia.model.AsignacionCuidador;
 import ni.edu.uam.assistia.model.Cuidador;
+import ni.edu.uam.assistia.model.Medicamento;
+import ni.edu.uam.assistia.model.Medico;
 import ni.edu.uam.assistia.model.Paciente;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public final class HibernateConfig implements AutoCloseable {
+    private static final HibernateConfig COMPARTIDA = new HibernateConfig();
     private SessionFactory factory;
+
+    private HibernateConfig() {
+    }
+
+    public static HibernateConfig compartida() {
+        return COMPARTIDA;
+    }
 
     public synchronized SessionFactory sessionFactory() {
         if (factory == null) {
@@ -28,6 +38,8 @@ public final class HibernateConfig implements AutoCloseable {
                     .addAnnotatedClass(Paciente.class)
                     .addAnnotatedClass(Cuidador.class)
                     .addAnnotatedClass(AsignacionCuidador.class)
+                    .addAnnotatedClass(Medicamento.class)
+                    .addAnnotatedClass(Medico.class)
                     .buildSessionFactory();
         }
         return factory;
