@@ -1,5 +1,6 @@
 package ni.edu.uam.assistia.util;
 
+import ni.edu.uam.assistia.persistence.HibernateConfig;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -13,7 +14,7 @@ public final class Tx {
 
     /** Operación de escritura dentro de una transacción. */
     public static <T> T ejecutar(Function<Session, T> trabajo) {
-        try (Session s = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session s = HibernateConfig.compartida().sessionFactory().openSession()) {
             Transaction tx = s.beginTransaction();
             try {
                 T resultado = trabajo.apply(s);
@@ -41,7 +42,7 @@ public final class Tx {
 
     /** Lectura sin transacción explícita. */
     public static <T> T leer(Function<Session, T> consulta) {
-        try (Session s = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session s = HibernateConfig.compartida().sessionFactory().openSession()) {
             return consulta.apply(s);
         } catch (RuntimeException e) {
             throw ErroresBD.traducir(e);

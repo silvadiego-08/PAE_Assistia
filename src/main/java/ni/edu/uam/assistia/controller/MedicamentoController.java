@@ -20,6 +20,11 @@ public class MedicamentoController {
     @FXML private HBox barraAcciones;
 
     private final MedicamentoService service = new MedicamentoService();
+    private final Async async;
+
+    public MedicamentoController(Async async) {
+        this.async = async;
+    }
 
     @FXML
     private void initialize() {
@@ -47,7 +52,7 @@ public class MedicamentoController {
         }
         String nombre = txtNombre.getText(), principio = txtPrincipioActivo.getText(),
                presentacion = txtPresentacion.getText(), concentracion = txtConcentracion.getText();
-        Async.accion(
+        async.accion(
                 () -> service.registrar(nombre, principio, presentacion, concentracion),
                 () -> {
                     limpiar();
@@ -67,7 +72,7 @@ public class MedicamentoController {
         Long id = sel.getId();
         String nombre = txtNombre.getText(), principio = txtPrincipioActivo.getText(),
                presentacion = txtPresentacion.getText(), concentracion = txtConcentracion.getText();
-        Async.accion(
+        async.accion(
                 () -> service.actualizar(id, nombre, principio, presentacion, concentracion),
                 () -> {
                     limpiar();
@@ -87,7 +92,7 @@ public class MedicamentoController {
         if (!Alertas.confirmar("¿Eliminar el medicamento «" + sel.getNombre() + "»?")) {
             return;
         }
-        Async.accion(
+        async.accion(
                 () -> service.eliminar(sel),
                 () -> {
                     limpiar();
@@ -112,7 +117,7 @@ public class MedicamentoController {
     }
 
     private void recargar() {
-        Async.consultar(
+        async.consultar(
                 service::listar,
                 lista -> tabla.setItems(FXCollections.observableArrayList(lista)),
                 Alertas::mostrar, barraAcciones);

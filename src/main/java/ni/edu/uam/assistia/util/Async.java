@@ -3,6 +3,7 @@ package ni.edu.uam.assistia.util;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -12,9 +13,13 @@ import java.util.function.Supplier;
  */
 public final class Async {
 
-    private Async() { }
+    private final Executor executor;
 
-    public static <T> void consultar(Supplier<T> trabajo, Consumer<T> alExito,
+    public Async(Executor executor) {
+        this.executor = executor;
+    }
+
+    public <T> void consultar(Supplier<T> trabajo, Consumer<T> alExito,
                                      Consumer<Throwable> alError, Node... bloquear) {
         Task<T> tarea = new Task<>() {
             @Override
@@ -31,12 +36,10 @@ public final class Async {
             cambiar(bloquear, false);
             alError.accept(tarea.getException());
         });
-        Thread hilo = new Thread(tarea, "acceso-datos");
-        hilo.setDaemon(true);
-        hilo.start();
+        executor.execute(tarea);
     }
 
-    public static void accion(Runnable trabajo, Runnable alExito,
+    public void accion(Runnable trabajo, Runnable alExito,
                               Consumer<Throwable> alError, Node... bloquear) {
         consultar(() -> {
             trabajo.run();
