@@ -37,12 +37,15 @@ public class HelloApplication extends Application {
         medicamentos.setControllerFactory(tipo -> new MedicamentoController(async));
         FXMLLoader medicos = new FXMLLoader(getClass().getResource("fxml/medicos.fxml"));
         medicos.setControllerFactory(tipo -> new MedicoController(async));
+        FXMLLoader tratamientos = new FXMLLoader(getClass().getResource("tratamiento-view.fxml") //Pestana tratamiento
+        );
 
         TabPane pestañas = new TabPane(
                 new Tab("Pacientes", pacientes.load()),
                 new Tab("Cuidadores", cuidadores.load()),
                 new Tab("Medicamentos", medicamentos.load()),
-                new Tab("Médicos", medicos.load()));
+                new Tab("Médicos", medicos.load()),
+                new Tab("Tratamientos", tratamientos.load())); //Nueva pestana
         pestañas.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         stage.setScene(new Scene(pestañas, 740, 660));
         stage.setMinWidth(580);

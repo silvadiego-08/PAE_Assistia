@@ -6,16 +6,19 @@
             fx:controller="ni.edu.uam.assistia.TratamientoController"
             prefWidth="1000" prefHeight="700">
     <top>
-        <VBox spacing="8" style="-fx-background-color: #E8EAF6;">
-            <padding><Insets top="18" right="20" bottom="18" left="20"/></padding>
-            <Label text="PAE Assistia - Gestión de Tratamientos" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
-            <Label text="Registro y seguimiento de tratamientos médicos"/>
+        <VBox spacing="3">
+            <padding>
+                <Insets top="8" right="15" bottom="8" left="15"/>
+            </padding>
+
+            <Label text="Gestión de Tratamientos"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
         </VBox>
     </top>
     <center>
         <ScrollPane fitToWidth="true">
             <content>
-                <VBox spacing="15">
+                <VBox spacing="8">
                     <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
                     <Label text="Datos del tratamiento" style="-fx-font-size: 17px; -fx-font-weight: bold;"/>
                     <GridPane hgap="12" vgap="12">
