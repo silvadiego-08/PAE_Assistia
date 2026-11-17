@@ -1,5 +1,5 @@
 
-package ni.edu.uam.assistia.models;
+package ni.edu.uam.assistia.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,13 +21,13 @@ public class Tratamiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Temporales hasta integrar las entidades
-    // Paciente y Medico de tus compañeros.
-    @Column(name = "paciente_id", nullable = false)
-    private Long pacienteId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "paciente_id", nullable = false)
+    private Paciente paciente;
 
-    @Column(name = "medico_id", nullable = false)
-    private Long medicoId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "medico_id", nullable = false)
+    private Medico medico;
 
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDate fechaInicio;

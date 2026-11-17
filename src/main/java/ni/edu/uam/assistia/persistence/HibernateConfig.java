@@ -13,6 +13,8 @@ import ni.edu.uam.assistia.model.Medico;
 import ni.edu.uam.assistia.model.Paciente;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import ni.edu.uam.assistia.model.Tratamiento;
+import ni.edu.uam.assistia.model.DetalleTratamiento;
 
 public final class HibernateConfig implements AutoCloseable {
     private static final HibernateConfig COMPARTIDA = new HibernateConfig();
@@ -40,6 +42,8 @@ public final class HibernateConfig implements AutoCloseable {
                     .addAnnotatedClass(AsignacionCuidador.class)
                     .addAnnotatedClass(Medicamento.class)
                     .addAnnotatedClass(Medico.class)
+                    .addAnnotatedClass(Tratamiento.class)
+                    .addAnnotatedClass(DetalleTratamiento.class)
                     .buildSessionFactory();
         }
         return factory;

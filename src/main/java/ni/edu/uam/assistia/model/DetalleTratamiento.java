@@ -1,5 +1,5 @@
 
-package ni.edu.uam.assistia.models;
+package ni.edu.uam.assistia.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,9 +23,9 @@ public class DetalleTratamiento {
     @JoinColumn(name = "tratamiento_id", nullable = false)
     private Tratamiento tratamiento;
 
-    // Temporal hasta integrar Medicamento
-    @Column(name = "medicamento_id", nullable = false)
-    private Long medicamentoId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "medicamento_id", nullable = false)
+    private Medicamento medicamento;
 
     @Column(
             name = "dosis_indicada",

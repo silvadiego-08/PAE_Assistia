@@ -1,8 +1,8 @@
 
 package ni.edu.uam.assistia.dao;
 
-import ni.edu.uam.assistia.models.Tratamiento;
-import ni.edu.uam.assistia.models.DetalleTratamiento;
+import ni.edu.uam.assistia.model.Tratamiento;
+import ni.edu.uam.assistia.model.DetalleTratamiento;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

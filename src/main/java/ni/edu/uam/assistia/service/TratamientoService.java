@@ -2,8 +2,8 @@
 package ni.edu.uam.assistia.service;
 
 import ni.edu.uam.assistia.dao.TratamientoDAO;
-import ni.edu.uam.assistia.models.Tratamiento;
-import ni.edu.uam.assistia.models.DetalleTratamiento;
+import ni.edu.uam.assistia.model.Tratamiento;
+import ni.edu.uam.assistia.model.DetalleTratamiento;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,11 +34,12 @@ public class TratamientoService {
             );
         }
 
-        if (detalle.getMedicamentoId() == null ||
-                detalle.getMedicamentoId() <= 0) {
-
+        if (detalle.getMedicamento() == null ||
+                detalle.getMedicamento().getId() == null ||
+                detalle.getMedicamento().getId() <= 0) {
             throw new IllegalArgumentException(
-                    "Debe ingresar un ID de medicamento válido."
+                    "Debe seleccionar un medicamento válido."
+
             );
         }
 
@@ -73,19 +74,19 @@ public class TratamientoService {
             );
         }
 
-        if (tratamiento.getPacienteId() == null ||
-                tratamiento.getPacienteId() <= 0) {
-
+        if (tratamiento.getPaciente() == null ||
+                tratamiento.getPaciente().getId() == null ||
+                tratamiento.getPaciente().getId() <= 0) {
             throw new IllegalArgumentException(
-                    "Debe ingresar un ID de paciente válido."
+                    "Debe seleccionar un paciente válido."
             );
         }
 
-        if (tratamiento.getMedicoId() == null ||
-                tratamiento.getMedicoId() <= 0) {
-
+        if (tratamiento.getMedico() == null ||
+                tratamiento.getMedico().getId() == null ||
+                tratamiento.getMedico().getId() <= 0) {
             throw new IllegalArgumentException(
-                    "Debe ingresar un ID de médico válido."
+                    "Debe seleccionar un médico válido."
             );
         }
 
