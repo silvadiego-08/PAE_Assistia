@@ -1,185 +1,192 @@
 
 package ni.edu.uam.assistia.dao;
 
-import ni.edu.uam.assistia.model.Tratamiento;
 import ni.edu.uam.assistia.model.DetalleTratamiento;
+import ni.edu.uam.assistia.model.Medicamento;
+import ni.edu.uam.assistia.model.Medico;
+import ni.edu.uam.assistia.model.Paciente;
+import ni.edu.uam.assistia.model.Tratamiento;
+import ni.edu.uam.assistia.persistence.HibernateConfig;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 import java.util.function.Consumer;
 
 public class TratamientoDAO {
 
-    private static final SessionFactory sessionFactory =
-            crearSessionFactory();
+    private SessionFactory sessionFactory() {
+        return HibernateConfig.compartida().sessionFactory();
+    }
 
-    // Configuración de Hibernate
-    private static SessionFactory crearSessionFactory() {
+    private void ejecutarTransaccion(Consumer<Session> operacion) {
+        try (Session session = sessionFactory().openSession()) {
+            Transaction transaccion = session.beginTransaction();
 
-        try {
-            Properties propiedades = new Properties();
-
-            try (InputStream archivo = TratamientoDAO.class
-                    .getClassLoader()
-                    .getResourceAsStream("hibernate.properties")) {
-
-                if (archivo == null) {
-                    throw new IllegalStateException(
-                            "No se encontró Hibernate.properties"
-                    );
+            try {
+                operacion.accept(session);
+                transaccion.commit();
+            } catch (Exception e) {
+                if (transaccion.isActive()) {
+                    transaccion.rollback();
                 }
-
-                propiedades.load(archivo);
+                throw e;
             }
-
-            return new Configuration()
-                    .addProperties(propiedades)
-                    .addAnnotatedClass(Tratamiento.class)
-                    .addAnnotatedClass(DetalleTratamiento.class)
-                    .buildSessionFactory();
-
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Error al configurar Hibernate", e
-            );
         }
     }
 
-    // Ejecutar operaciones dentro de una transacción
-    private void ejecutarTransaccion(
-            Consumer<Session> operacion) {
-
-        Transaction transaccion = null;
-
-        try (Session session = sessionFactory.openSession()) {
-
-            transaccion = session.beginTransaction();
-
-            operacion.accept(session);
-
-            transaccion.commit();
-
-        } catch (Exception e) {
-
-            if (transaccion != null &&
-                    transaccion.isActive()) {
-                transaccion.rollback();
-            }
-
-            throw new RuntimeException(
-                    "Error en la base de datos: " +
-                            e.getMessage(), e
-            );
+    // Comprobar que la entidad existe y obtenerla en la sesión actual
+    private <T> T obtener(Session session, Class<T> tipo,
+                          Long id, String nombre) {
+        if (id == null) {
+            throw new IllegalArgumentException(
+                    "Debe seleccionar un " + nombre + " válido.");
         }
+
+        T entidad = session.find(tipo, id);
+
+        if (entidad == null) {
+            throw new IllegalArgumentException(
+                    "El " + nombre + " seleccionado ya no existe.");
+        }
+
+        return entidad;
     }
 
-    // CREATE: guardar tratamiento y todos sus detalles
+    // CREATE: guardar tratamiento y detalles en una transacción
     public void guardar(Tratamiento tratamiento) {
-
         ejecutarTransaccion(session -> {
+
+            tratamiento.setPaciente(obtener(
+                    session, Paciente.class,
+                    tratamiento.getPaciente().getId(), "paciente"));
+
+            tratamiento.setMedico(obtener(
+                    session, Medico.class,
+                    tratamiento.getMedico().getId(), "médico"));
+
+            for (DetalleTratamiento detalle : tratamiento.getDetalles()) {
+                detalle.setMedicamento(obtener(
+                        session, Medicamento.class,
+                        detalle.getMedicamento().getId(), "medicamento"));
+
+                detalle.setTratamiento(tratamiento);
+            }
+
             session.persist(tratamiento);
             session.flush();
         });
     }
 
-    // READ: listar tratamientos con sus detalles
+    // READ: listar tratamientos con sus relaciones
     public List<Tratamiento> listar() {
-
-        try (Session session = sessionFactory.openSession()) {
-
-            return session.createQuery(
-                    """
+        try (Session session = sessionFactory().openSession()) {
+            return session.createQuery("""
                     SELECT DISTINCT t
                     FROM Tratamiento t
-                    LEFT JOIN FETCH t.detalles
+                    JOIN FETCH t.paciente
+                    JOIN FETCH t.medico
+                    LEFT JOIN FETCH t.detalles d
+                    LEFT JOIN FETCH d.medicamento
                     ORDER BY t.id DESC
-                    """,
-                    Tratamiento.class
-            ).getResultList();
+                    """, Tratamiento.class).getResultList();
         }
     }
 
     // READ: buscar tratamiento por ID
     public Tratamiento buscarPorId(Long id) {
-
-        try (Session session = sessionFactory.openSession()) {
-
-            return session.createQuery(
-                            """
-                            SELECT DISTINCT t
-                            FROM Tratamiento t
-                            LEFT JOIN FETCH t.detalles
-                            WHERE t.id = :id
-                            """,
-                            Tratamiento.class
-                    )
+        try (Session session = sessionFactory().openSession()) {
+            return session.createQuery("""
+                    SELECT DISTINCT t
+                    FROM Tratamiento t
+                    JOIN FETCH t.paciente
+                    JOIN FETCH t.medico
+                    LEFT JOIN FETCH t.detalles d
+                    LEFT JOIN FETCH d.medicamento
+                    WHERE t.id = :id
+                    """, Tratamiento.class)
                     .setParameter("id", id)
                     .uniqueResult();
         }
     }
 
-    // UPDATE: actualizar los datos generales
+    // UPDATE: actualizar datos y agregar detalles nuevos
     public void actualizar(Long id, Tratamiento datos) {
-
         ejecutarTransaccion(session -> {
 
-            Tratamiento existente =
-                    session.get(Tratamiento.class, id);
+            Tratamiento existente = obtener(
+                    session, Tratamiento.class, id, "tratamiento");
 
-            if (existente == null) {
-                throw new IllegalArgumentException(
-                        "Tratamiento no encontrado"
-                );
-            }
+            existente.setPaciente(obtener(
+                    session, Paciente.class,
+                    datos.getPaciente().getId(), "paciente"));
 
-            existente.setPacienteId(datos.getPacienteId());
-            existente.setMedicoId(datos.getMedicoId());
+            existente.setMedico(obtener(
+                    session, Medico.class,
+                    datos.getMedico().getId(), "médico"));
+
             existente.setFechaInicio(datos.getFechaInicio());
             existente.setFechaFin(datos.getFechaFin());
-            existente.setActivo(datos.isActivo());
+
+            // Conservamos el estado actual del tratamiento.
+            // La desactivación se realiza con su método específico.
+
+            if (datos.getDetalles() != null) {
+                for (DetalleTratamiento detalle : datos.getDetalles()) {
+
+                    // Solo insertar detalles nuevos
+                    if (detalle.getId() != null) {
+                        continue;
+                    }
+
+                    DetalleTratamiento nuevo = new DetalleTratamiento();
+
+                    nuevo.setTratamiento(existente);
+                    nuevo.setMedicamento(obtener(
+                            session, Medicamento.class,
+                            detalle.getMedicamento().getId(),
+                            "medicamento"));
+
+                    nuevo.setDosisIndicada(detalle.getDosisIndicada());
+                    nuevo.setUnidad(detalle.getUnidad());
+                    nuevo.setInstrucciones(detalle.getInstrucciones());
+
+                    session.persist(nuevo);
+                }
+            }
+
+            session.flush();
         });
     }
 
-    // Agregar un detalle a un tratamiento existente
-    public void agregarDetalle(
-            Long tratamientoId,
-            DetalleTratamiento detalle) {
-
+    // Agregar un medicamento a un tratamiento existente
+    public void agregarDetalle(Long tratamientoId,
+                               DetalleTratamiento detalle) {
         ejecutarTransaccion(session -> {
 
-            Tratamiento tratamiento =
-                    session.get(Tratamiento.class, tratamientoId);
+            Tratamiento tratamiento = obtener(
+                    session, Tratamiento.class,
+                    tratamientoId, "tratamiento");
 
-            if (tratamiento == null) {
-                throw new IllegalArgumentException(
-                        "Tratamiento no encontrado"
-                );
-            }
+            Medicamento medicamento = obtener(
+                    session, Medicamento.class,
+                    detalle.getMedicamento().getId(), "medicamento");
 
             detalle.setTratamiento(tratamiento);
+            detalle.setMedicamento(medicamento);
+
             session.persist(detalle);
         });
     }
 
     // Desactivar sin eliminar el historial
     public void desactivar(Long id) {
-
         ejecutarTransaccion(session -> {
 
-            Tratamiento tratamiento =
-                    session.get(Tratamiento.class, id);
-
-            if (tratamiento == null) {
-                throw new IllegalArgumentException(
-                        "Tratamiento no encontrado"
-                );
-            }
+            Tratamiento tratamiento = obtener(
+                    session, Tratamiento.class, id, "tratamiento");
 
             tratamiento.setActivo(false);
         });
@@ -187,22 +194,17 @@ public class TratamientoDAO {
 
     // CONSULTA HQL 1:
     // Medicamentos de tratamientos activos de un paciente
-    public List<DetalleTratamiento> medicamentosActivos(
-            Long pacienteId) {
-
-        try (Session session = sessionFactory.openSession()) {
-
-            return session.createQuery(
-                            """
-                            SELECT d
-                            FROM DetalleTratamiento d
-                            JOIN FETCH d.tratamiento t
-                            WHERE t.pacienteId = :pacienteId
-                            AND t.activo = true
-                            ORDER BY d.medicamentoId
-                            """,
-                            DetalleTratamiento.class
-                    )
+    public List<DetalleTratamiento> medicamentosActivos(Long pacienteId) {
+        try (Session session = sessionFactory().openSession()) {
+            return session.createQuery("""
+                    SELECT d
+                    FROM DetalleTratamiento d
+                    JOIN FETCH d.tratamiento t
+                    JOIN FETCH d.medicamento
+                    WHERE t.paciente.id = :pacienteId
+                    AND t.activo = true
+                    ORDER BY d.medicamento.id
+                    """, DetalleTratamiento.class)
                     .setParameter("pacienteId", pacienteId)
                     .getResultList();
         }
@@ -210,31 +212,20 @@ public class TratamientoDAO {
 
     // CONSULTA HQL 2:
     // Listar tratamientos de un paciente
-    public List<Tratamiento> listarPorPaciente(
-            Long pacienteId) {
-
-        try (Session session = sessionFactory.openSession()) {
-
-            return session.createQuery(
-                            """
-                            SELECT DISTINCT t
-                            FROM Tratamiento t
-                            LEFT JOIN FETCH t.detalles
-                            WHERE t.pacienteId = :pacienteId
-                            ORDER BY t.fechaInicio DESC
-                            """,
-                            Tratamiento.class
-                    )
+    public List<Tratamiento> listarPorPaciente(Long pacienteId) {
+        try (Session session = sessionFactory().openSession()) {
+            return session.createQuery("""
+                    SELECT DISTINCT t
+                    FROM Tratamiento t
+                    JOIN FETCH t.paciente
+                    JOIN FETCH t.medico
+                    LEFT JOIN FETCH t.detalles d
+                    LEFT JOIN FETCH d.medicamento
+                    WHERE t.paciente.id = :pacienteId
+                    ORDER BY t.fechaInicio DESC
+                    """, Tratamiento.class)
                     .setParameter("pacienteId", pacienteId)
                     .getResultList();
-        }
-    }
-
-    // Cerrar Hibernate al finalizar la aplicación
-    public static void cerrar() {
-
-        if (!sessionFactory.isClosed()) {
-            sessionFactory.close();
         }
     }
 }
