@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="10">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+    <VBox fx:id="contenido" spacing="10" VBox.vgrow="ALWAYS">
+        <GridPane hgap="10" vgap="8">
+            <Label text="Nombre"/>
+            <TextField fx:id="nombre" GridPane.columnIndex="1" prefWidth="250"/>
+            <Label text="Fecha de nacimiento" GridPane.rowIndex="1"/>
+            <DatePicker fx:id="nacimiento" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label text="Teléfono" GridPane.rowIndex="2"/>
+            <TextField fx:id="telefono" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+        <HBox spacing="8">
+            <Button text="Guardar" onAction="#guardar"/>
+            <Button text="Actualizar" onAction="#actualizar"/>
+            <Button text="Eliminar" onAction="#eliminar"/>
+            <Button text="Limpiar" onAction="#limpiar"/>
+            <Button text="Recargar" onAction="#recargar"/>
+        </HBox>
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS" prefHeight="175">
+            <columns>
+                <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="230"/>
+                <TableColumn fx:id="columnaNacimiento" text="Fecha de nacimiento" prefWidth="155"/>
+                <TableColumn fx:id="columnaTelefono" text="Teléfono" prefWidth="140"/>
+            </columns>
+            <placeholder><Label text="No hay pacientes para mostrar."/></placeholder>
+        </TableView>
+        <Label text="Cuidadores del paciente" style="-fx-font-weight: bold;"/>
+        <FlowPane hgap="8" vgap="8">
+            <ComboBox fx:id="cuidador" promptText="Seleccionar cuidador" prefWidth="210"/>
+            <TextField fx:id="parentesco" promptText="Parentesco (opcional)" prefWidth="155"/>
+            <CheckBox fx:id="principal" text="Responsable principal"/>
+        </FlowPane>
+        <HBox spacing="8">
+            <Button text="Asignar" onAction="#asignar"/>
+            <Button text="Quitar asignación" onAction="#quitar"/>
+            <Button text="Recargar cuidadores" onAction="#recargarAsignaciones"/>
+        </HBox>
+        <TableView fx:id="asignaciones" VBox.vgrow="ALWAYS" prefHeight="145">
+            <columns>
+                <TableColumn fx:id="columnaCuidador" text="Cuidador" prefWidth="230"/>
+                <TableColumn fx:id="columnaParentesco" text="Parentesco" prefWidth="155"/>
+                <TableColumn fx:id="columnaPrincipal" text="Principal" prefWidth="140"/>
+            </columns>
+            <placeholder><Label text="Selecciona un paciente para ver sus cuidadores."/></placeholder>
+        </TableView>
+    </VBox>
+    <Label fx:id="estado" wrapText="true"/>
+</VBox>
