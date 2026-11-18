@@ -306,6 +306,14 @@
     -fx-table-cell-border-color: #e1ece7;
 }
 
+.assistia .tabla-tomas {
+    -fx-fixed-cell-size: -1;
+}
+
+.assistia .tabla-tomas .table-row-cell {
+    -fx-min-height: 43px;
+}
+
 .assistia .table-view:focused {
     -fx-border-color: -assistia-focus;
 }

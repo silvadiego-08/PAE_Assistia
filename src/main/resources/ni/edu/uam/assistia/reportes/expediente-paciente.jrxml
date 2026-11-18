@@ -10,7 +10,7 @@
               rightMargin="40"
               topMargin="35"
               bottomMargin="35"
-              whenNoDataType="NoDataSection">
+              whenNoDataType="AllSectionsNoDetail">
 
     <style name="Base" isDefault="true"
            fontName="SansSerif" fontSize="9"/>
@@ -217,8 +217,9 @@
         </band>
     </pageFooter>
 
-    <noData>
+    <summary>
         <band height="70">
+            <printWhenExpression><![CDATA[$V{REPORT_COUNT} == 0]]></printWhenExpression>
             <staticText>
                 <reportElement mode="Opaque"
                                backcolor="#F0F5F3"
@@ -233,6 +234,6 @@
                 <text><![CDATA[Este paciente no tiene tratamientos registrados.]]></text>
             </staticText>
         </band>
-    </noData>
+    </summary>
 
 </jasperReport>

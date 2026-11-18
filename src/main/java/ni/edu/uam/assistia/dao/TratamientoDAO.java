@@ -10,7 +10,10 @@ import ni.edu.uam.assistia.model.Tratamiento;
 import ni.edu.uam.assistia.util.Tx;
 import org.hibernate.Session;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class TratamientoDAO {
     private static final String TRATAMIENTOS_CON_DETALLES = """
@@ -54,6 +57,10 @@ public class TratamientoDAO {
             if (!existente.getPaciente().getId().equals(datos.getPaciente().getId()) && tieneTomas(session, id)) {
                 throw new ValidacionException("Este tratamiento tiene tomas registradas y debe conservar su paciente.");
             }
+            if (!existente.getFechaInicio().equals(datos.getFechaInicio())
+                    || !Objects.equals(existente.getFechaFin(), datos.getFechaFin())) {
+                validarFechasDeTomas(session, id, datos);
+            }
             asignarDatos(session, existente, datos);
             if (datos.getDetalles() != null) {
                 for (DetalleTratamiento detalle : datos.getDetalles()) {
@@ -63,6 +70,26 @@ public class TratamientoDAO {
                 }
             }
         });
+    }
+
+    private void validarFechasDeTomas(Session session, Long tratamientoId, Tratamiento datos) {
+        String fueraDeRango = datos.getFechaFin() == null ? "r.fechaHoraProgramada < :inicio"
+                : "(r.fechaHoraProgramada < :inicio or r.fechaHoraProgramada >= :finExclusivo)";
+        var consulta = session.createSelectionQuery("""
+                SELECT r.fechaHoraProgramada FROM RegistroToma r
+                WHERE r.detalleTratamiento.tratamiento.id = :tratamiento AND
+                """ + fueraDeRango + " ORDER BY r.fechaHoraProgramada", LocalDateTime.class)
+                .setParameter("tratamiento", tratamientoId)
+                .setParameter("inicio", datos.getFechaInicio().atStartOfDay())
+                .setMaxResults(1);
+        if (datos.getFechaFin() != null) {
+            consulta.setParameter("finExclusivo", datos.getFechaFin().plusDays(1).atStartOfDay());
+        }
+        LocalDateTime conflicto = consulta.uniqueResult();
+        if (conflicto != null) {
+            throw new ValidacionException("El tratamiento debe incluir la toma programada para el "
+                    + conflicto.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ".");
+        }
     }
 
     private boolean tieneTomas(Session session, Long tratamientoId) {

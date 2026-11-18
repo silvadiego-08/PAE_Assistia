@@ -4,23 +4,27 @@ import jakarta.persistence.LockModeType;
 import ni.edu.uam.assistia.exception.ValidacionException;
 import ni.edu.uam.assistia.model.DetalleTratamiento;
 import ni.edu.uam.assistia.model.EstadoToma;
+import ni.edu.uam.assistia.model.Medicamento;
 import ni.edu.uam.assistia.model.RegistroToma;
 import ni.edu.uam.assistia.model.Tratamiento;
 import ni.edu.uam.assistia.util.Tx;
 import org.hibernate.Session;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class RegistroTomaDAO {
-    public record Toma(Long id, String medicamento, LocalDateTime programada,
+    public record Toma(Long id, Medicamento producto, BigDecimal dosis, String unidad,
+                       Long tratamientoId, LocalDateTime programada,
                        LocalDateTime realizada, EstadoToma estado, String observacion) {
     }
 
     public List<Toma> listar(Long pacienteId, LocalDate dia) {
         return Tx.leer(session -> session.createSelectionQuery("""
-                SELECT r.id, m.nombre, r.fechaHoraProgramada, r.fechaHoraReal, r.estado, r.observacion
+                SELECT r.id, m, d.dosisIndicada, d.unidad, d.tratamiento.id,
+                       r.fechaHoraProgramada, r.fechaHoraReal, r.estado, r.observacion
                 FROM RegistroToma r
                 JOIN r.detalleTratamiento d
                 JOIN d.medicamento m

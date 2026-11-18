@@ -9,12 +9,14 @@ import ni.edu.uam.assistia.dao.RegistroTomaDAO.Toma;
 import ni.edu.uam.assistia.exception.ValidacionException;
 import ni.edu.uam.assistia.model.DetalleTratamiento;
 import ni.edu.uam.assistia.model.EstadoToma;
+import ni.edu.uam.assistia.model.Medicamento;
 import ni.edu.uam.assistia.model.Paciente;
 import ni.edu.uam.assistia.persistence.PacienteDao;
 import ni.edu.uam.assistia.service.RegistroTomaService;
 import ni.edu.uam.assistia.util.Alertas;
 import ni.edu.uam.assistia.util.Async;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -65,14 +67,17 @@ public class RegistroTomaController {
         diaConsulta.setValue(hoy);
         fechaProgramada.setValue(hoy);
         paciente.setConverter(soloLectura(valor -> valor.getNombre() + " (#" + valor.getId() + ")"));
-        medicamento.setConverter(soloLectura(detalle -> {
-            var tratamiento = detalle.getTratamiento();
-            return "%s · %s %s · Tratamiento #%d".formatted(detalle.getMedicamento().getNombre(),
-                    detalle.getDosisIndicada().stripTrailingZeros().toPlainString(),
-                    detalle.getUnidad(), tratamiento.getId());
-        }));
+        medicamento.setConverter(soloLectura(detalle -> descripcion(detalle.getMedicamento(),
+                detalle.getDosisIndicada(), detalle.getUnidad(), detalle.getTratamiento().getId())));
 
-        columna(colMedicamento, Toma::medicamento);
+        columna(colMedicamento, RegistroTomaController::descripcion);
+        colMedicamento.setCellFactory(col -> new TableCell<>() {
+            @Override protected void updateItem(String texto, boolean vacia) {
+                super.updateItem(texto, vacia);
+                setText(vacia ? null : texto);
+                setWrapText(true);
+            }
+        });
         columna(colProgramada, toma -> formatear(toma.programada()));
         columna(colRealizada, toma -> formatear(toma.realizada()));
         columna(colEstado, toma -> toma.estado() == EstadoToma.PENDIENTE ? "Pendiente" : "Realizada");
@@ -191,7 +196,7 @@ public class RegistroTomaController {
         if (toma == null || toma.estado() != EstadoToma.PENDIENTE) return;
         tomaEnEdicion = toma;
         tituloEditor.setText("Cambiar horario");
-        contextoEditor.setText(paciente.getValue().getNombre() + " · " + toma.medicamento()
+        contextoEditor.setText(paciente.getValue().getNombre() + " · " + descripcion(toma)
                 + "\nHorario actual: " + formatear(toma.programada()));
         campoMedicamento.setVisible(false);
         campoObservacion.setVisible(false);
@@ -251,7 +256,7 @@ public class RegistroTomaController {
         Toma toma = tabla.getSelectionModel().getSelectedItem();
         if (toma == null || toma.estado() != EstadoToma.PENDIENTE) return;
         Long pacienteId = paciente.getValue().getId();
-        if (Alertas.confirmar("¿Registrar como realizada la toma de " + toma.medicamento()
+        if (Alertas.confirmar("¿Registrar como realizada la toma de " + descripcion(toma)
                 + " programada para " + formatear(toma.programada()) + "? Se guardará la hora actual.")) {
             guardar(() -> servicio.marcarRealizada(toma.id(), pacienteId),
                     "Toma marcada como realizada.", diaConsulta.getValue());
@@ -285,8 +290,17 @@ public class RegistroTomaController {
         btnReprogramar.setDisable(!pendiente);
         btnRealizada.setDisable(!pendiente);
         seleccion.setText(toma == null ? "Selecciona una toma para registrar su realización o cambiar el horario."
-                : toma.medicamento() + " · " + formatear(toma.programada())
+                : descripcion(toma) + " · " + formatear(toma.programada())
                 + (pendiente ? " · Pendiente" : " · Realizada a las " + formatear(toma.realizada())));
+    }
+
+    private static String descripcion(Toma toma) {
+        return descripcion(toma.producto(), toma.dosis(), toma.unidad(), toma.tratamientoId());
+    }
+
+    private static String descripcion(Medicamento producto, BigDecimal dosis, String unidad, Long tratamientoId) {
+        return "%s · Dosis: %s %s · Tratamiento #%d".formatted(
+                producto, dosis.stripTrailingZeros().toPlainString(), unidad, tratamientoId);
     }
 
     private static <T> StringConverter<T> soloLectura(Function<T, String> texto) {
