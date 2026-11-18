@@ -1,34 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="12">
-    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
-    <Label text="Cuidadores" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-    <VBox fx:id="contenido" spacing="12" VBox.vgrow="ALWAYS">
-        <GridPane hgap="12" vgap="8">
-            <Label text="Nombre"/>
-            <TextField fx:id="nombre" GridPane.columnIndex="1" prefWidth="320"/>
-            <Label text="Teléfono" GridPane.rowIndex="1"/>
-            <TextField fx:id="telefono" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-            <Label text="Correo" GridPane.rowIndex="2"/>
-            <TextField fx:id="correo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        </GridPane>
-        <HBox spacing="8">
-            <Button text="Guardar" onAction="#guardar"/>
-            <Button text="Actualizar" onAction="#actualizar"/>
-            <Button text="Eliminar" onAction="#eliminar"/>
-            <Button text="Limpiar" onAction="#limpiar"/>
-            <Button text="Recargar" onAction="#recargar"/>
-        </HBox>
-        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="215"/>
-                <TableColumn fx:id="columnaTelefono" text="Teléfono" prefWidth="140"/>
-                <TableColumn fx:id="columnaCorreo" text="Correo" prefWidth="240"/>
-            </columns>
-            <placeholder><Label text="No hay cuidadores para mostrar."/></placeholder>
-        </TableView>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="18" styleClass="module-page">
+    <VBox spacing="5">
+        <Label text="Cuidadores" styleClass="page-title"/>
+        <Label text="Consulta y actualiza la información de contacto de los cuidadores." styleClass="muted" wrapText="true"/>
     </VBox>
-    <Label fx:id="estado" wrapText="true"/>
+    <Label fx:id="estado" styleClass="feedback" wrapText="true" maxWidth="Infinity"/>
+    <VBox fx:id="contenido" spacing="16" VBox.vgrow="ALWAYS">
+        <VBox spacing="13" styleClass="panel">
+            <Label text="Datos del registro" styleClass="section-title"/>
+            <GridPane hgap="18" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+                <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="Nombre" styleClass="field-label"/>
+                    <TextField fx:id="nombre" promptText="Nombre completo" accessibleText="Nombre"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="Teléfono (opcional)" styleClass="field-label"/>
+                    <TextField fx:id="telefono" promptText="Número de teléfono" accessibleText="Teléfono (opcional)"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="Correo (opcional)" styleClass="field-label"/>
+                    <TextField fx:id="correo" promptText="usuario@ejemplo.com" accessibleText="Correo (opcional)"/>
+                </VBox>
+            </GridPane>
+            <HBox spacing="10" styleClass="actions">
+                <Button text="Guardar" onAction="#guardar" styleClass="primary-button"/>
+                <Button text="Actualizar" onAction="#actualizar" styleClass="secondary-button"/>
+                <Button text="Limpiar" onAction="#limpiar" styleClass="secondary-button"/>
+                <Button text="Recargar" onAction="#recargar" styleClass="secondary-button"/>
+                <Button text="Eliminar" onAction="#eliminar" styleClass="danger-button"/>
+            </HBox>
+        </VBox>
+        <VBox spacing="9" styleClass="panel" VBox.vgrow="ALWAYS">
+            <Label text="Lista de cuidadores" styleClass="section-title"/>
+            <TableView fx:id="tabla" minHeight="220" prefHeight="270" VBox.vgrow="ALWAYS">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>
+                </columnResizePolicy>
+                <columns>
+                    <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="210" minWidth="150"/>
+                    <TableColumn fx:id="columnaTelefono" text="Teléfono" prefWidth="145" minWidth="100"/>
+                    <TableColumn fx:id="columnaCorreo" text="Correo" prefWidth="225" minWidth="140"/>
+                </columns>
+                <placeholder><Label text="No hay cuidadores para mostrar." styleClass="muted" wrapText="true"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
 </VBox>

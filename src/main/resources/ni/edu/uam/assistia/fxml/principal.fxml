@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" styleClass="assistia">
+    <fx:define>
+        <ToggleGroup fx:id="navegacion"/>
+    </fx:define>
+    <left>
+        <VBox styleClass="sidebar" prefWidth="218" spacing="12">
+            <VBox styleClass="brand" spacing="4">
+                <Label text="Assistia" styleClass="brand-name"/>
+                <Label text="Gestión de cuidados" styleClass="brand-description"/>
+            </VBox>
+            <ToggleButton fx:id="navInicio" text="Inicio" selected="true" toggleGroup="$navegacion"
+                          maxWidth="Infinity" styleClass="nav-link"/>
+            <ToggleButton fx:id="navPacientes" text="Pacientes" toggleGroup="$navegacion"
+                          maxWidth="Infinity" styleClass="nav-link"/>
+            <ToggleButton fx:id="navCuidadores" text="Cuidadores" toggleGroup="$navegacion"
+                          maxWidth="Infinity" styleClass="nav-link"/>
+            <ToggleButton fx:id="navMedicamentos" text="Medicamentos" toggleGroup="$navegacion"
+                          maxWidth="Infinity" styleClass="nav-link"/>
+            <ToggleButton fx:id="navMedicos" text="Médicos" toggleGroup="$navegacion"
+                          maxWidth="Infinity" styleClass="nav-link"/>
+        </VBox>
+    </left>
+    <center>
+        <StackPane fx:id="areaPrincipal" alignment="TOP_LEFT">
+            <ScrollPane fx:id="inicio" fitToWidth="true" hbarPolicy="NEVER" accessibleText="Inicio">
+                <VBox spacing="24" styleClass="home-page">
+                    <VBox spacing="9" styleClass="hero">
+                        <Label text="Inicio" styleClass="hero-title"/>
+                        <Label text="Elige una sección para consultar o registrar información."
+                               styleClass="hero-description" wrapText="true"/>
+                    </VBox>
+                    <GridPane hgap="16" vgap="16">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" fillWidth="true"/>
+                            <ColumnConstraints percentWidth="50" fillWidth="true"/>
+                        </columnConstraints>
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Button fx:id="abrirPacientes" styleClass="menu-card" maxWidth="Infinity"
+                                    accessibleText="Abrir Pacientes" contentDisplay="GRAPHIC_ONLY">
+                                <graphic>
+                                    <VBox spacing="7">
+                                        <Label text="Pacientes" styleClass="card-title"/>
+                                        <Label text="Consulta los datos de cada paciente y sus cuidadores." styleClass="card-description" wrapText="true"/>
+                                    </VBox>
+                                </graphic>
+                            </Button>
+                        </VBox>
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Button fx:id="abrirCuidadores" styleClass="menu-card" maxWidth="Infinity"
+                                    accessibleText="Abrir Cuidadores" contentDisplay="GRAPHIC_ONLY">
+                                <graphic>
+                                    <VBox spacing="7">
+                                        <Label text="Cuidadores" styleClass="card-title"/>
+                                        <Label text="Gestiona los datos de las personas que brindan apoyo." styleClass="card-description" wrapText="true"/>
+                                    </VBox>
+                                </graphic>
+                            </Button>
+                        </VBox>
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Button fx:id="abrirMedicamentos" styleClass="menu-card" maxWidth="Infinity"
+                                    accessibleText="Abrir Medicamentos" contentDisplay="GRAPHIC_ONLY">
+                                <graphic>
+                                    <VBox spacing="7">
+                                        <Label text="Medicamentos" styleClass="card-title"/>
+                                        <Label text="Consulta y actualiza el catálogo de medicamentos." styleClass="card-description" wrapText="true"/>
+                                    </VBox>
+                                </graphic>
+                            </Button>
+                        </VBox>
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Button fx:id="abrirMedicos" styleClass="menu-card" maxWidth="Infinity"
+                                    accessibleText="Abrir Médicos" contentDisplay="GRAPHIC_ONLY">
+                                <graphic>
+                                    <VBox spacing="7">
+                                        <Label text="Médicos" styleClass="card-title"/>
+                                        <Label text="Consulta los profesionales y sus especialidades." styleClass="card-description" wrapText="true"/>
+                                    </VBox>
+                                </graphic>
+                            </Button>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+            </ScrollPane>
+        </StackPane>
+    </center>
+</BorderPane>
