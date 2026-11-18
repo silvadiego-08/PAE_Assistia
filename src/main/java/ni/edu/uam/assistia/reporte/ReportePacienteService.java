@@ -28,7 +28,7 @@ import java.util.Map;
 public class ReportePacienteService {
 
     private static final String PLANTILLA =
-            "/reportes/expediente-paciente.jrxml";
+            "/ni/edu/uam/assistia/reportes/expediente-paciente.jrxml";
 
     private static final DateTimeFormatter FECHA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");

@@ -9,6 +9,7 @@ module ni.edu.uam.assistia {
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
     requires static lombok;
+    requires jasperreports;
 
     opens ni.edu.uam.assistia to javafx.fxml;
     opens ni.edu.uam.assistia.model to org.hibernate.orm.core;
