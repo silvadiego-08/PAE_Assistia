@@ -169,23 +169,30 @@ public class TratamientoController {
         } catch (Exception e) { mostrarError(e.getMessage()); }
     }
 
-    @FXML private void actualizarTratamiento() {
+    @FXML
+    private void actualizarTratamiento() {
         try {
-            if (tratamientoSeleccionadoId == null)
-                throw new IllegalArgumentException("Seleccione un tratamiento.");
+            if (tratamientoSeleccionadoId == null) {
+                throw new IllegalArgumentException(
+                        "Seleccione un tratamiento."
+                );
+            }
+
             Long id = tratamientoSeleccionadoId;
             Tratamiento datos = construirTratamiento();
+
             service.validarTratamiento(datos, false);
-            ejecutarOperacion(() -> {
-                service.actualizar(id, datos);
-                for (DetalleTratamiento detalle : datos.getDetalles()) {
-                    service.agregarDetalle(id, detalle);
-                }
-            }, "Tratamiento actualizado correctamente.");
+
+            ejecutarOperacion(
+                    () -> service.actualizar(id, datos),
+                    "Tratamiento actualizado correctamente."
+            );
+
         } catch (Exception e) {
             mostrarError(e.getMessage());
         }
     }
+
         @FXML private void desactivarTratamiento() {
             if (tratamientoSeleccionadoId == null) {
                 mostrarError("Seleccione un tratamiento."); return;

@@ -37,7 +37,7 @@ public class HelloApplication extends Application {
         medicamentos.setControllerFactory(tipo -> new MedicamentoController(async));
         FXMLLoader medicos = new FXMLLoader(getClass().getResource("fxml/medicos.fxml"));
         medicos.setControllerFactory(tipo -> new MedicoController(async));
-        FXMLLoader tratamientos = new FXMLLoader(getClass().getResource("tratamiento-view.fxml") //Pestana tratamiento
+        FXMLLoader tratamientos = new FXMLLoader(getClass().getResource("Tratamiento-view.fxml") //Pestana tratamiento
         );
 
         TabPane pestañas = new TabPane(

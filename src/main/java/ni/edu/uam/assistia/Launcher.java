@@ -14,7 +14,7 @@ public class Launcher extends Application {
     public void start(Stage stage) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(
-                Launcher.class.getResource("tratamiento-view.fxml")
+                Launcher.class.getResource("Tratamiento-view.fxml")
         );
 
         Scene scene = new Scene(loader.load());
