@@ -17,7 +17,8 @@
                     <Button fx:id="btnBuscar" text="Buscar en línea" onAction="#onBuscar" styleClass="primary-button"/>
                 </HBox>
                 <Label fx:id="lblEstadoBusqueda" styleClass="muted" wrapText="true"/>
-                <TableView fx:id="tablaResultados" prefHeight="175">
+                <TableView fx:id="tablaResultados" minHeight="260" prefHeight="310"
+                           accessibleText="Resultados de la búsqueda de medicamentos en RxNorm">
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_LAST_COLUMN"/>
                     </columnResizePolicy>
