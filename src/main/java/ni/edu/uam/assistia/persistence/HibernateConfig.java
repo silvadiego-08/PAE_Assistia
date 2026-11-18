@@ -12,6 +12,7 @@ import ni.edu.uam.assistia.model.DetalleTratamiento;
 import ni.edu.uam.assistia.model.Medicamento;
 import ni.edu.uam.assistia.model.Medico;
 import ni.edu.uam.assistia.model.Paciente;
+import ni.edu.uam.assistia.model.RegistroToma;
 import ni.edu.uam.assistia.model.Tratamiento;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -44,6 +45,7 @@ public final class HibernateConfig implements AutoCloseable {
                     .addAnnotatedClass(Medico.class)
                     .addAnnotatedClass(Tratamiento.class)
                     .addAnnotatedClass(DetalleTratamiento.class)
+                    .addAnnotatedClass(RegistroToma.class)
                     .buildSessionFactory();
         }
         return factory;
