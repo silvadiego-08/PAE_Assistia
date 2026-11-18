@@ -22,6 +22,8 @@
                           maxWidth="Infinity" styleClass="nav-link"/>
             <ToggleButton fx:id="navMedicos" text="Médicos" toggleGroup="$navegacion"
                           maxWidth="Infinity" styleClass="nav-link"/>
+            <ToggleButton fx:id="navTratamientos" text="Tratamientos" toggleGroup="$navegacion"
+                          maxWidth="Infinity" styleClass="nav-link"/>
         </VBox>
     </left>
     <center>
@@ -78,6 +80,18 @@
                                     <VBox spacing="7">
                                         <Label text="Médicos" styleClass="card-title"/>
                                         <Label text="Consulta los profesionales y sus especialidades." styleClass="card-description" wrapText="true"/>
+                                    </VBox>
+                                </graphic>
+                            </Button>
+                        </VBox>
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Button fx:id="abrirTratamientos" styleClass="menu-card" maxWidth="Infinity"
+                                    accessibleText="Abrir Tratamientos" contentDisplay="GRAPHIC_ONLY">
+                                <graphic>
+                                    <VBox spacing="7">
+                                        <Label text="Tratamientos" styleClass="card-title"/>
+                                        <Label text="Asigna medicamentos y consulta los tratamientos activos de cada paciente."
+                                               styleClass="card-description" wrapText="true"/>
                                     </VBox>
                                 </graphic>
                             </Button>
