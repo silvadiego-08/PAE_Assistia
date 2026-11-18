@@ -135,6 +135,8 @@ public final class PacienteController {
             contenido.setDisable(false);
 
             Throwable error = tarea.getException();
+            System.getLogger(PacienteController.class.getName()).log(
+                    System.Logger.Level.ERROR, "No se pudo generar el expediente PDF.", error);
 
             Alert alerta = new Alert(
                     Alert.AlertType.ERROR,

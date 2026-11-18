@@ -14,6 +14,8 @@ module ni.edu.uam.assistia {
     opens ni.edu.uam.assistia to javafx.fxml;
     opens ni.edu.uam.assistia.model to org.hibernate.orm.core;
     opens ni.edu.uam.assistia.dao to org.hibernate.orm.core;
+    // JasperReports puede cargar BeanUtils desde el classpath o el module-path.
+    opens ni.edu.uam.assistia.reporte;
     exports ni.edu.uam.assistia;
     exports ni.edu.uam.assistia.controller;
     exports ni.edu.uam.assistia.persistence;
