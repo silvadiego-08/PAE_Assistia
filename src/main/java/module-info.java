@@ -12,6 +12,7 @@ module ni.edu.uam.assistia {
 
     opens ni.edu.uam.assistia to javafx.fxml;
     opens ni.edu.uam.assistia.model to org.hibernate.orm.core;
+    opens ni.edu.uam.assistia.dao to org.hibernate.orm.core;
     exports ni.edu.uam.assistia;
     exports ni.edu.uam.assistia.controller;
     exports ni.edu.uam.assistia.persistence;

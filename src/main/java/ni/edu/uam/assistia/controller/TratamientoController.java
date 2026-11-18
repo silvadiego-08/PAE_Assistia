@@ -1,7 +1,9 @@
 package ni.edu.uam.assistia.controller;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -26,10 +28,14 @@ import ni.edu.uam.assistia.util.Alertas;
 import ni.edu.uam.assistia.util.Async;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TratamientoController {
+    private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/uuuu");
+
     @FXML private VBox pagina;
+    @FXML private VBox historial, editor;
     @FXML private ComboBox<Paciente> cbPaciente, cbPacienteConsulta;
     @FXML private ComboBox<Medico> cbMedico;
     @FXML private ComboBox<Medicamento> cbMedicamento;
@@ -40,7 +46,8 @@ public class TratamientoController {
     @FXML private TableColumn<DetalleTratamiento, String> colMedicamento, colDosis, colInstrucciones;
     @FXML private TableColumn<DetalleTratamiento, String> colActivoTratamiento, colActivoMedicamento, colActivoDosis;
     @FXML private ListView<Tratamiento> listaTratamientos;
-    @FXML private Label lblEstado, lblConsulta;
+    @FXML private Label lblEstado, lblConsulta, lblEditor, lblHistorial;
+    @FXML private Button btnAbrir, btnGuardar, btnDesactivar, btnQuitar;
 
     private final PacienteDao pacienteDao;
     private final Async async;
@@ -84,14 +91,23 @@ public class TratamientoController {
             protected void updateItem(Tratamiento tratamiento, boolean vacia) {
                 super.updateItem(tratamiento, vacia);
                 setText(vacia || tratamiento == null ? null :
-                        "#" + tratamiento.getId() + " · " + tratamiento.getPaciente().getNombre()
-                                + " · " + tratamiento.getFechaInicio() + " · "
+                        tratamiento.getPaciente().getNombre() + " · Tratamiento #" + tratamiento.getId()
+                                + " · Inicio " + FECHA.format(tratamiento.getFechaInicio()) + " · "
                                 + (tratamiento.isActivo() ? "Activo" : "Inactivo"));
             }
         });
-        listaTratamientos.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) -> {
-            if (seleccionado != null) mostrarTratamiento(seleccionado);
-        });
+        btnAbrir.disableProperty().bind(listaTratamientos.getSelectionModel().selectedItemProperty().isNull());
+        tablaDetalles.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) ->
+                btnQuitar.setDisable(seleccionado == null || seleccionado.getId() != null));
+        historial.managedProperty().bind(historial.visibleProperty());
+        editor.managedProperty().bind(editor.visibleProperty());
+        tablaDetalles.visibleProperty().bind(Bindings.isNotEmpty(tablaDetalles.getItems()));
+        tablaDetalles.managedProperty().bind(tablaDetalles.visibleProperty());
+        btnQuitar.visibleProperty().bind(tablaDetalles.visibleProperty());
+        btnQuitar.managedProperty().bind(btnQuitar.visibleProperty());
+        btnDesactivar.managedProperty().bind(btnDesactivar.visibleProperty());
+        lblEstado.visibleProperty().bind(lblEstado.textProperty().isNotEmpty());
+        lblEstado.managedProperty().bind(lblEstado.visibleProperty());
         cbPacienteConsulta.valueProperty().addListener((obs, anterior, paciente) -> {
             tablaActivos.getItems().clear();
             lblConsulta.setText("Seleccione un paciente y pulse «Consultar».");
@@ -102,21 +118,28 @@ public class TratamientoController {
     @FXML
     private void agregarMedicamento() {
         try {
-            DetalleTratamiento detalle = new DetalleTratamiento();
-            detalle.setMedicamento(cbMedicamento.getValue());
-            detalle.setDosisIndicada(new BigDecimal(txtDosis.getText().strip().replace(',', '.')));
-            detalle.setUnidad(cbUnidad.getValue());
-            String instrucciones = txtInstrucciones.getText().strip();
-            detalle.setInstrucciones(instrucciones.isEmpty() ? null : instrucciones);
-            service.validarDetalle(detalle);
-            tablaDetalles.getItems().add(detalle);
+            tablaDetalles.getItems().add(leerMedicamento());
             limpiarDetalle();
-            lblEstado.setText("Medicamento agregado al formulario.");
-        } catch (NumberFormatException error) {
-            Alertas.advertencia("Ingrese una dosis numérica.");
+            lblEstado.setText("Medicamento añadido. Guarda el tratamiento para confirmar.");
+            cbMedicamento.requestFocus();
         } catch (ValidacionException error) {
             Alertas.mostrar(error);
         }
+    }
+
+    private DetalleTratamiento leerMedicamento() {
+        DetalleTratamiento detalle = new DetalleTratamiento();
+        detalle.setMedicamento(cbMedicamento.getValue());
+        try {
+            detalle.setDosisIndicada(new BigDecimal(txtDosis.getText().strip().replace(',', '.')));
+        } catch (NumberFormatException error) {
+            throw new ValidacionException("Escribe una dosis numérica para el medicamento.");
+        }
+        detalle.setUnidad(cbUnidad.getValue());
+        String instrucciones = txtInstrucciones.getText().strip();
+        detalle.setInstrucciones(instrucciones.isEmpty() ? null : instrucciones);
+        service.validarDetalle(detalle);
+        return detalle;
     }
 
     @FXML
@@ -136,21 +159,16 @@ public class TratamientoController {
 
     @FXML
     private void guardar() {
-        if (tratamientoSeleccionadoId != null) {
-            Alertas.advertencia("Pulse «Actualizar» para guardar cambios o «Limpiar» para crear un tratamiento.");
-            return;
+        try {
+            Tratamiento datos = datosFormulario();
+            if (cbMedicamento.getValue() != null || cbUnidad.getValue() != null
+                    || !txtDosis.getText().isBlank() || !txtInstrucciones.getText().isBlank()) {
+                datos.agregarDetalle(leerMedicamento());
+            }
+            guardarCambios(datos, tratamientoSeleccionadoId == null);
+        } catch (ValidacionException error) {
+            Alertas.mostrar(error);
         }
-        Tratamiento datos = datosFormulario();
-        guardarCambios(datos, true);
-    }
-
-    @FXML
-    private void actualizar() {
-        if (tratamientoSeleccionadoId == null) {
-            Alertas.advertencia("Seleccione un tratamiento del historial.");
-            return;
-        }
-        guardarCambios(datosFormulario(), false);
     }
 
     @FXML
@@ -160,7 +178,8 @@ public class TratamientoController {
             Alertas.advertencia("Seleccione un tratamiento activo del historial.");
             return;
         }
-        if (Alertas.confirmar("¿Desactivar el tratamiento #" + seleccionado.getId() + "?")) {
+        if (Alertas.confirmar("¿Desactivar el tratamiento #" + seleccionado.getId()
+                + "? El tratamiento quedará en el historial y se descartarán los cambios sin guardar.")) {
             ejecutar(() -> service.desactivar(seleccionado.getId()), "Tratamiento desactivado.");
         }
     }
@@ -182,9 +201,43 @@ public class TratamientoController {
     }
 
     @FXML
-    private void limpiar() {
+    private void nuevo() {
         limpiarFormulario();
-        lblEstado.setText("Formulario limpio.");
+        lblEditor.setText("Nuevo tratamiento");
+        btnGuardar.setText("Guardar tratamiento");
+        btnDesactivar.setVisible(false);
+        abrirEditor();
+        cbPaciente.requestFocus();
+    }
+
+    @FXML
+    private void abrirSeleccionado() {
+        Tratamiento tratamiento = listaTratamientos.getSelectionModel().getSelectedItem();
+        if (tratamiento != null) {
+            mostrarTratamiento(tratamiento);
+            abrirEditor();
+            cbMedico.requestFocus();
+        }
+    }
+
+    private void abrirEditor() {
+        historial.setVisible(false);
+        editor.setVisible(true);
+        lblEstado.setText("");
+    }
+
+    @FXML
+    private void cancelar() {
+        if (Alertas.confirmar("¿Volver al historial? Los cambios sin guardar se descartarán.")) {
+            cerrarEditor();
+            listaTratamientos.requestFocus();
+        }
+    }
+
+    private void cerrarEditor() {
+        limpiarFormulario();
+        editor.setVisible(false);
+        historial.setVisible(true);
     }
 
     private void guardarCambios(Tratamiento datos, boolean nuevo) {
@@ -223,12 +276,16 @@ public class TratamientoController {
     private void mostrarTratamiento(Tratamiento tratamiento) {
         tratamientoSeleccionadoId = tratamiento.getId();
         cbPaciente.setValue(buscarPaciente(tratamiento.getPaciente().getId()));
-        cbMedico.getSelectionModel().select(tratamiento.getMedico());
+        cbMedico.setValue(cbMedico.getItems().stream()
+                .filter(medico -> medico.getId().equals(tratamiento.getMedico().getId()))
+                .findFirst().orElse(null));
         dpInicio.setValue(tratamiento.getFechaInicio());
         dpFin.setValue(tratamiento.getFechaFin());
         limpiarDetalle();
         tablaDetalles.getItems().setAll(tratamiento.getDetalles());
-        lblEstado.setText("Tratamiento #" + tratamiento.getId() + " seleccionado.");
+        lblEditor.setText("Editar tratamiento #" + tratamiento.getId() + " de " + tratamiento.getPaciente().getNombre());
+        btnGuardar.setText("Guardar cambios");
+        btnDesactivar.setVisible(tratamiento.isActivo());
     }
 
     private void mostrarActivos(List<DetalleTratamiento> activos) {
@@ -239,8 +296,8 @@ public class TratamientoController {
 
     private void ejecutar(Runnable operacion, String mensaje) {
         async.accion(operacion, () -> {
-            limpiarFormulario();
-            lblEstado.setText(mensaje);
+            cerrarEditor();
+            lblHistorial.setText(mensaje);
             recargar(mensaje);
         }, Alertas::mostrar, pagina);
     }
@@ -259,7 +316,7 @@ public class TratamientoController {
                 cbPacienteConsulta.setValue(buscarPaciente(filtro.getId()));
                 if (cbPacienteConsulta.getValue() != null) mostrarActivos(datos.activos());
             }
-            lblEstado.setText(mensaje);
+            lblHistorial.setText(mensaje);
         }, Alertas::mostrar, pagina);
     }
 

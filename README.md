@@ -33,7 +33,7 @@ La interfaz utiliza **JavaFX y FXML**. La persistencia se implementa con **Jakar
 1. Conéctate como administrador y abre **Query Tool** sobre la base `postgres`. Ejecuta [crear-rol-local.sql](scripts/crear-rol-local.sql) si `assistia_local` aún no existe.
 2. En **Login/Group Roles**, actualiza la lista, abre las propiedades de `assistia_local` y configura su contraseña en la pestaña **Definition**.
 3. En un **Query Tool** nuevo sobre `postgres`, activa **Auto-commit** y ejecuta [crear-bd-local.sql](scripts/crear-bd-local.sql). Este archivo contiene únicamente la sentencia `CREATE DATABASE`.
-4. Actualiza **Databases** y abre otro **Query Tool** sobre `assistia`. Ejecuta [crear-tablas.sql](scripts/crear-tablas.sql) completo. Las siete tablas de la rama aparecen en **Schemas → public → Tables** después de actualizar el árbol.
+4. Actualiza **Databases** y abre otro **Query Tool** sobre `assistia` con el usuario de `DB_USER` (`assistia_local` en una instalación nueva con estos pasos). Ejecuta [crear-tablas.sql](scripts/crear-tablas.sql) completo. Si la base ya tiene tablas, usa una conexión cuyo usuario sea propietario de las tablas existentes y pueda crear objetos en `public`. Las ocho tablas de la rama aparecen en **Schemas → public → Tables** después de actualizar el árbol.
 
 Omite la creación del rol o de la base si ya existen. Para usar los scripts con otro nombre de base o de rol, adapta las sentencias y los valores de `db.properties`. El script de tablas puede ejecutarse de nuevo sobre el mismo esquema. Si las tablas ya existen, el script conserva su estructura.
 
@@ -60,7 +60,7 @@ Luego ejecuta el script de tablas desde la raíz del proyecto.
 psql -U assistia_local -d assistia -v ON_ERROR_STOP=1 -f scripts/crear-tablas.sql
 ```
 
-Hibernate también puede crear o actualizar las tablas de las entidades registradas al inicializar la conexión. El script incluye `tratamientos` y `detalles_tratamiento` y se puede volver a ejecutar sobre una base local creada para los catálogos.
+Hibernate también puede crear o actualizar las tablas de las entidades registradas al inicializar la conexión. Si ya tienes una base local con tratamientos, vuelve a ejecutar [crear-tablas.sql](scripts/crear-tablas.sql) para agregar `registro_toma`.
 
 ## 3. Cómo ejecutar el proyecto
 
@@ -95,6 +95,13 @@ Hibernate también puede crear o actualizar las tablas de las entidades registra
    ```
 
    Desde IntelliJ IDEA, puedes abrir `pom.xml` como proyecto Maven, seleccionar JDK 21 y ejecutar el objetivo `javafx:run`.
+
+### Registrar una toma
+
+1. Guarda un tratamiento activo con al menos un medicamento y abre **Tomas**.
+2. Selecciona al paciente y al medicamento. Completa la fecha y la hora en formato de 24 horas, por ejemplo `08:30`, y pulsa **Programar toma**.
+3. Elige el día programado en **Día de consulta** y selecciona la fila. Para reprogramar una toma pendiente, escribe la nueva fecha y hora y pulsa **Cambiar horario de la toma seleccionada**.
+4. Pulsa **Marcar realizada** para guardar la hora actual. La toma conserva su hora programada y sigue visible en el día programado con estado **Realizada**.
 
 ## 4. Modelo de datos
 
