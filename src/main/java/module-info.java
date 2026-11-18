@@ -6,6 +6,8 @@ module ni.edu.uam.assistia {
     requires jakarta.persistence;
     requires java.sql;
     requires java.naming;
+    requires java.net.http;
+    requires com.fasterxml.jackson.databind;
     requires static lombok;
 
     opens ni.edu.uam.assistia to javafx.fxml;
