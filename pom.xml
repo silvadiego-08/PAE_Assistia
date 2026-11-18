@@ -51,6 +51,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.21.3</version>
+        </dependency>
+
         <!-- Lectura de la respuesta JSON de RxNorm. -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
