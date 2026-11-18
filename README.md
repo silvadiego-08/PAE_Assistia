@@ -28,6 +28,17 @@ La interfaz utiliza **JavaFX y FXML**. La persistencia se implementa con **Jakar
 
 ### Crear la base de datos local
 
+**Con pgAdmin**
+
+1. Conéctate como administrador y abre **Query Tool** sobre la base `postgres`. Ejecuta [crear-rol-local.sql](scripts/crear-rol-local.sql) si `assistia_local` aún no existe.
+2. En **Login/Group Roles**, actualiza la lista, abre las propiedades de `assistia_local` y configura su contraseña en la pestaña **Definition**.
+3. En un **Query Tool** nuevo sobre `postgres`, activa **Auto-commit** y ejecuta [crear-bd-local.sql](scripts/crear-bd-local.sql). Este archivo contiene únicamente la sentencia `CREATE DATABASE`.
+4. Actualiza **Databases** y abre otro **Query Tool** sobre `assistia`. Ejecuta [crear-tablas.sql](scripts/crear-tablas.sql) completo. Las cinco tablas de la rama aparecen en **Schemas → public → Tables** después de actualizar el árbol.
+
+Omite la creación del rol o de la base si ya existen. Para usar los scripts con otro nombre de base o de rol, adapta las sentencias y los valores de `db.properties`. El script de tablas puede ejecutarse de nuevo sobre el mismo esquema. Si las tablas ya existen, el script conserva su estructura.
+
+**Con psql**
+
 Conéctate al servidor PostgreSQL como administrador usando `psql`. Ajusta `postgres` si tu administrador tiene otro nombre.
 
 ```powershell
@@ -43,7 +54,13 @@ CREATE DATABASE assistia OWNER assistia_local;
 \q
 ```
 
-También puedes crear el rol con permiso de inicio de sesión y asignarlo como propietario de `assistia` desde pgAdmin. Si ya tienes una base local de desarrollo, usa su nombre y el usuario correspondiente al configurar la aplicación. Hibernate crea o actualiza las tablas de las entidades registradas cuando se inicializa la conexión.
+Luego ejecuta el script de tablas desde la raíz del proyecto.
+
+```powershell
+psql -U assistia_local -d assistia -v ON_ERROR_STOP=1 -f scripts/crear-tablas.sql
+```
+
+Hibernate también puede crear o actualizar las tablas de las entidades registradas al inicializar la conexión. Los scripts de esta rama cubren Pacientes, Cuidadores, Asignación de cuidadores, Médicos y Medicamentos.
 
 ## 3. Cómo ejecutar el proyecto
 

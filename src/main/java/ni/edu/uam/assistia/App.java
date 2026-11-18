@@ -20,16 +20,16 @@ import ni.edu.uam.assistia.persistence.HibernateConfig;
 import ni.edu.uam.assistia.persistence.PacienteDao;
 import ni.edu.uam.assistia.util.Async;
 
-public class HelloApplication extends Application {
+public class App extends Application {
     private final HibernateConfig hibernate = HibernateConfig.compartida();
     private final ExecutorService baseDeDatos = Executors.newSingleThreadExecutor();
 
     @Override
     public void start(Stage stage) throws IOException {
         CuidadorDao cuidadorDao = new CuidadorDao(hibernate);
-        FXMLLoader cuidadores = new FXMLLoader(getClass().getResource("cuidadores.fxml"));
+        FXMLLoader cuidadores = new FXMLLoader(getClass().getResource("fxml/cuidadores.fxml"));
         cuidadores.setController(new CuidadorController(cuidadorDao, baseDeDatos));
-        FXMLLoader pacientes = new FXMLLoader(getClass().getResource("pacientes.fxml"));
+        FXMLLoader pacientes = new FXMLLoader(getClass().getResource("fxml/pacientes.fxml"));
         pacientes.setController(new PacienteController(new PacienteDao(hibernate), cuidadorDao, baseDeDatos));
 
         Async async = new Async(baseDeDatos);

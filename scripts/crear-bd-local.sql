@@ -1,8 +1,4 @@
--- Ejecutar con un superusuario de PostgreSQL:
---   psql -U postgres -f scripts/crear-bd-local.sql
--- Cambien la contraseña de ejemplo por la suya (NO la suban a Git).
-
-CREATE USER app_med WITH PASSWORD 'cambiar_esta_clave';
-
--- OWNER app_med es necesario en PostgreSQL 15+ para que Hibernate pueda crear tablas en el esquema public.
-CREATE DATABASE gestor_medicacion OWNER app_med;
+-- Ejecutar en Query Tool sobre postgres con un administrador y Auto-commit activado.
+-- El rol assistia_local debe existir antes de ejecutar este archivo.
+-- Si assistia ya existe, usa esa base y verifica quién es su propietario.
+CREATE DATABASE assistia OWNER assistia_local;
