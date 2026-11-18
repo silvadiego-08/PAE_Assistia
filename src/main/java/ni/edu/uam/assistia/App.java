@@ -20,6 +20,7 @@ import ni.edu.uam.assistia.controller.PacienteController;
 import ni.edu.uam.assistia.controller.MedicamentoController;
 import ni.edu.uam.assistia.controller.MedicoController;
 import ni.edu.uam.assistia.controller.TratamientoController;
+import ni.edu.uam.assistia.controller.RegistroTomaController;
 import ni.edu.uam.assistia.persistence.CuidadorDao;
 import ni.edu.uam.assistia.persistence.HibernateConfig;
 import ni.edu.uam.assistia.persistence.PacienteDao;
@@ -40,11 +41,13 @@ public class App extends Application {
     @FXML private ToggleButton navMedicamentos;
     @FXML private ToggleButton navMedicos;
     @FXML private ToggleButton navTratamientos;
+    @FXML private ToggleButton navTomas;
     @FXML private Button abrirPacientes;
     @FXML private Button abrirCuidadores;
     @FXML private Button abrirMedicamentos;
     @FXML private Button abrirMedicos;
     @FXML private Button abrirTratamientos;
+    @FXML private Button abrirTomas;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -77,6 +80,8 @@ public class App extends Application {
         medicos.setControllerFactory(tipo -> new MedicoController(async));
         FXMLLoader tratamientos = cargar("tratamientos.fxml");
         tratamientos.setControllerFactory(tipo -> new TratamientoController(new PacienteDao(hibernate), async));
+        FXMLLoader tomas = cargar("tomas.fxml");
+        tomas.setControllerFactory(tipo -> new RegistroTomaController(new PacienteDao(hibernate), async));
 
         navInicio.setOnAction(evento -> mostrar(navInicio, inicio));
         conectar(navPacientes, abrirPacientes, pacientes);
@@ -84,6 +89,7 @@ public class App extends Application {
         conectar(navMedicamentos, abrirMedicamentos, medicamentos);
         conectar(navMedicos, abrirMedicos, medicos);
         conectar(navTratamientos, abrirTratamientos, tratamientos);
+        conectar(navTomas, abrirTomas, tomas);
 
         stage.setScene(escena);
         stage.setMinWidth(920);

@@ -149,6 +149,35 @@
     -fx-font-weight: bold;
 }
 
+.treatment-tabs > .tab-header-area {
+    -fx-padding: 0 0 10 0;
+}
+
+.treatment-tabs > .tab-header-area > .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.treatment-tabs > .tab-header-area > .headers-region > .tab {
+    -fx-background-color: #e3efe9;
+    -fx-background-insets: 0 6 0 0;
+    -fx-background-radius: 8;
+    -fx-padding: 7 15;
+    -fx-cursor: hand;
+}
+
+.treatment-tabs > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-color: -assistia-green;
+}
+
+.treatment-tabs > .tab-header-area .tab .tab-label {
+    -fx-text-fill: -assistia-ink;
+    -fx-font-weight: bold;
+}
+
+.treatment-tabs > .tab-header-area .tab:selected .tab-label {
+    -fx-text-fill: white;
+}
+
 .panel {
     -fx-background-color: #ffffff;
     -fx-background-radius: 14px;

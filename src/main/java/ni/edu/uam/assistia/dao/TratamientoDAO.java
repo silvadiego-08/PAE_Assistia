@@ -1,5 +1,6 @@
 package ni.edu.uam.assistia.dao;
 
+import jakarta.persistence.LockModeType;
 import ni.edu.uam.assistia.exception.ValidacionException;
 import ni.edu.uam.assistia.model.DetalleTratamiento;
 import ni.edu.uam.assistia.model.Medicamento;
@@ -46,7 +47,13 @@ public class TratamientoDAO {
 
     public void actualizar(Long id, Tratamiento datos) {
         Tx.ejecutarVoid(session -> {
-            Tratamiento existente = obtener(session, Tratamiento.class, id, "tratamiento");
+            Tratamiento existente = session.find(Tratamiento.class, id, LockModeType.PESSIMISTIC_WRITE);
+            if (existente == null) {
+                throw new ValidacionException("El tratamiento seleccionado ya no existe.");
+            }
+            if (!existente.getPaciente().getId().equals(datos.getPaciente().getId()) && tieneTomas(session, id)) {
+                throw new ValidacionException("Este tratamiento tiene tomas registradas y debe conservar su paciente.");
+            }
             asignarDatos(session, existente, datos);
             if (datos.getDetalles() != null) {
                 for (DetalleTratamiento detalle : datos.getDetalles()) {
@@ -56,6 +63,16 @@ public class TratamientoDAO {
                 }
             }
         });
+    }
+
+    private boolean tieneTomas(Session session, Long tratamientoId) {
+        return !session.createSelectionQuery("""
+                SELECT r.id FROM RegistroToma r
+                WHERE r.detalleTratamiento.tratamiento.id = :tratamiento
+                """, Long.class)
+                .setParameter("tratamiento", tratamientoId)
+                .setMaxResults(1)
+                .getResultList().isEmpty();
     }
 
     public void agregarDetalle(Long tratamientoId, DetalleTratamiento detalle) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/scripts/crear-rol-local.sql" value="f4ce71f5-2ec6-4460-9140-174d250fad11" />
+    <file url="file://$PROJECT_DIR$/scripts/crear-tablas.sql" value="f4ce71f5-2ec6-4460-9140-174d250fad11" />
+  </component>
+</project>
