@@ -99,9 +99,9 @@ Hibernate también puede crear o actualizar las tablas de las entidades registra
 ### Registrar una toma
 
 1. Guarda un tratamiento activo con al menos un medicamento y abre **Tomas**.
-2. Selecciona al paciente y al medicamento. Completa la fecha y la hora en formato de 24 horas, por ejemplo `08:30`, y pulsa **Programar toma**.
-3. Elige el día programado en **Día de consulta** y selecciona la fila. Para reprogramar una toma pendiente, escribe la nueva fecha y hora y pulsa **Cambiar horario de la toma seleccionada**.
-4. Pulsa **Marcar realizada** para guardar la hora actual. La toma conserva su hora programada y sigue visible en el día programado con estado **Realizada**.
+2. Selecciona al paciente y pulsa **Nueva toma**. Elige el medicamento, completa la fecha y la hora en formato de 24 horas, por ejemplo `08:30`, y pulsa **Programar toma**. El listado mostrará el día que programaste.
+3. Selecciona una toma pendiente y pulsa **Cambiar horario**. Ajusta la fecha y la hora que aparecen precargadas y pulsa **Guardar nuevo horario**.
+4. Selecciona una toma pendiente y pulsa **Marcar realizada**. Confirma para guardar la hora actual. La toma conserva su hora programada y sigue visible en el día programado con estado **Realizada**.
 
 ## 4. Modelo de datos
 

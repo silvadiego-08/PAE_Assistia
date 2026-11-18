@@ -7,66 +7,79 @@
       fx:id="pagina" spacing="18" styleClass="module-page">
     <Label text="Registro de tomas" styleClass="page-title"/>
 
-    <VBox spacing="12" styleClass="panel">
-        <HBox spacing="12" alignment="BOTTOM_LEFT">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Paciente" styleClass="field-label"/>
-                <ComboBox fx:id="paciente" promptText="Selecciona un paciente" maxWidth="Infinity"
-                          accessibleText="Paciente"/>
-            </VBox>
-            <VBox spacing="5">
-                <Label text="Día de consulta" styleClass="field-label"/>
-                <DatePicker fx:id="diaConsulta" editable="false" accessibleText="Día de consulta"/>
-            </VBox>
-            <Button text="Recargar" onAction="#recargar" styleClass="secondary-button"/>
-        </HBox>
-        <TableView fx:id="tabla" prefHeight="220" accessibleText="Tomas del día">
+    <HBox fx:id="filtros" spacing="12" alignment="BOTTOM_LEFT">
+        <VBox spacing="5" minWidth="0" HBox.hgrow="ALWAYS">
+            <Label text="Paciente" styleClass="field-label"/>
+            <ComboBox fx:id="paciente" promptText="Selecciona un paciente" minWidth="0" maxWidth="Infinity"
+                      accessibleText="Paciente"/>
+        </VBox>
+        <VBox spacing="5">
+            <Label text="Tomas del día" styleClass="field-label"/>
+            <DatePicker fx:id="diaConsulta" prefWidth="190" editable="false" accessibleText="Día de consulta"/>
+        </VBox>
+        <Button text="Recargar" minWidth="-Infinity" onAction="#recargar" styleClass="secondary-button"/>
+    </HBox>
+
+    <VBox fx:id="listado" spacing="12" styleClass="panel">
+        <FlowPane hgap="12" vgap="8">
+            <Button fx:id="btnNueva" text="Nueva toma" onAction="#nueva" styleClass="primary-button"/>
+        </FlowPane>
+        <Label fx:id="estadoPaciente" styleClass="muted" wrapText="true"/>
+        <TableView fx:id="tabla" prefHeight="280" minHeight="180" accessibleText="Tomas del día">
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>
             </columnResizePolicy>
             <columns>
-                <TableColumn fx:id="colMedicamento" text="Medicamento" prefWidth="140"/>
-                <TableColumn fx:id="colProgramada" text="Programada" prefWidth="140"/>
-                <TableColumn fx:id="colRealizada" text="Realizada" prefWidth="140"/>
-                <TableColumn fx:id="colEstado" text="Estado" prefWidth="80"/>
-                <TableColumn fx:id="colObservacion" text="Observación" prefWidth="130"/>
+                <TableColumn fx:id="colMedicamento" text="Medicamento" prefWidth="160" minWidth="100"/>
+                <TableColumn fx:id="colProgramada" text="Hora programada" prefWidth="160" minWidth="100"/>
+                <TableColumn fx:id="colRealizada" text="Hora real" prefWidth="160" minWidth="100"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="100" minWidth="80"/>
+                <TableColumn fx:id="colObservacion" text="Observación" prefWidth="150" minWidth="90"/>
             </columns>
             <placeholder>
-                <Label text="Selecciona un paciente o consulta otro día." styleClass="muted"/>
+                <Label fx:id="vacio" text="Selecciona un paciente para ver sus tomas."
+                       styleClass="muted" wrapText="true" maxWidth="450"/>
             </placeholder>
         </TableView>
-        <Button fx:id="btnRealizada" text="Marcar realizada" onAction="#marcarRealizada"
-                styleClass="secondary-button"/>
+        <Label fx:id="seleccion" styleClass="muted" wrapText="true"/>
+        <FlowPane hgap="12" vgap="8">
+            <Button fx:id="btnRealizada" text="Marcar realizada" onAction="#marcarRealizada"
+                    styleClass="secondary-button"/>
+            <Button fx:id="btnReprogramar" text="Cambiar horario" onAction="#reprogramar"
+                    styleClass="secondary-button"/>
+        </FlowPane>
     </VBox>
 
-    <VBox spacing="12" styleClass="panel">
-        <Label text="Programación" styleClass="section-title"/>
+    <VBox fx:id="editor" visible="false" spacing="16" styleClass="panel">
         <VBox spacing="5">
+            <Label fx:id="tituloEditor" styleClass="section-title"/>
+            <Label fx:id="contextoEditor" styleClass="muted" wrapText="true"/>
+        </VBox>
+        <VBox fx:id="campoMedicamento" spacing="5">
             <Label text="Medicamento del tratamiento" styleClass="field-label"/>
-            <ComboBox fx:id="medicamento" promptText="Selecciona un medicamento" maxWidth="Infinity"
+            <ComboBox fx:id="medicamento" promptText="Selecciona un medicamento" minWidth="0" maxWidth="Infinity"
                       accessibleText="Medicamento del tratamiento"/>
         </VBox>
-        <HBox spacing="12">
+        <FlowPane hgap="16" vgap="12">
             <VBox spacing="5">
                 <Label text="Fecha programada" styleClass="field-label"/>
                 <DatePicker fx:id="fechaProgramada" editable="false" accessibleText="Fecha programada"/>
             </VBox>
             <VBox spacing="5">
                 <Label text="Hora (24 horas)" styleClass="field-label"/>
-                <TextField fx:id="horaProgramada" promptText="08:30" prefColumnCount="6"
+                <TextField fx:id="horaProgramada" promptText="08:30" prefColumnCount="8"
                            accessibleText="Hora programada"/>
             </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Observación (opcional)" styleClass="field-label"/>
-                <TextField fx:id="observacion" accessibleText="Observación de una toma nueva"/>
-            </VBox>
-        </HBox>
-        <HBox spacing="12">
-            <Button fx:id="btnProgramar" text="Programar toma" onAction="#programar"
+        </FlowPane>
+        <VBox fx:id="campoObservacion" spacing="5">
+            <Label text="Observación (opcional)" styleClass="field-label"/>
+            <TextField fx:id="observacion" accessibleText="Observación de una toma nueva"/>
+        </VBox>
+        <FlowPane hgap="12" vgap="8">
+            <Button fx:id="btnGuardar" text="Programar toma" onAction="#guardarHorario"
                     styleClass="primary-button"/>
-            <Button fx:id="btnReprogramar" text="Cambiar horario de la toma seleccionada"
-                    onAction="#reprogramar" styleClass="secondary-button"/>
-        </HBox>
-        <Label fx:id="mensaje" wrapText="true" styleClass="muted"/>
+            <Button text="Cancelar" onAction="#cancelar" styleClass="secondary-button"/>
+        </FlowPane>
     </VBox>
+    <Label fx:id="mensaje" wrapText="true" styleClass="muted"/>
 </VBox>
