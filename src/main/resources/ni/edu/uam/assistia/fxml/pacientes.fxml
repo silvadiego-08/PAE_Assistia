@@ -39,6 +39,10 @@
         </VBox>
         <VBox spacing="9" styleClass="panel" VBox.vgrow="ALWAYS">
             <Label text="Lista de pacientes" styleClass="section-title"/>
+            <Button
+                    text="Generar expediente PDF"
+                    onAction="#generarReporte"
+                    styleClass="primary-button"/>
             <TableView fx:id="tabla" minHeight="168" prefHeight="190" VBox.vgrow="ALWAYS">
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>

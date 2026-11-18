@@ -25,11 +25,16 @@ import ni.edu.uam.assistia.model.Cuidador;
 import ni.edu.uam.assistia.model.Paciente;
 import ni.edu.uam.assistia.persistence.CuidadorDao;
 import ni.edu.uam.assistia.persistence.PacienteDao;
+import java.nio.file.Path;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
+import ni.edu.uam.assistia.reporte.ReportePacienteService;
 
 public final class PacienteController {
     private final PacienteDao pacientes;
     private final CuidadorDao cuidadores;
     private final Executor executor;
+    private final ReportePacienteService reporteService;
 
     @FXML private VBox contenido;
     @FXML private TextField nombre;
@@ -48,11 +53,105 @@ public final class PacienteController {
     @FXML private TableColumn<AsignacionCuidador, String> columnaPrincipal;
     @FXML private Label estado;
 
-    public PacienteController(PacienteDao pacientes, CuidadorDao cuidadores, Executor executor) {
+    public PacienteController(
+            PacienteDao pacientes,
+            CuidadorDao cuidadores,
+            Executor executor,
+            ReportePacienteService reporteService) {
+
         this.pacientes = pacientes;
         this.cuidadores = cuidadores;
         this.executor = executor;
+        this.reporteService = reporteService;
+
     }
+
+    @FXML
+    private void generarReporte() {
+
+        Paciente paciente = seleccionarPaciente();
+
+        if (paciente == null) {
+            return;
+        }
+
+        FileChooser selector = new FileChooser();
+        selector.setTitle("Guardar expediente médico");
+        selector.setInitialFileName(
+                "expediente_" +
+                        paciente.getNombre().trim().replaceAll("[^a-zA-Z0-9_-]", "_") +
+                        ".pdf"
+        );
+
+        selector.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf")
+        );
+
+        Window ventana = contenido.getScene().getWindow();
+
+        java.io.File archivo = selector.showSaveDialog(ventana);
+
+        if (archivo == null) {
+            return;
+        }
+
+        Path destino = archivo.toPath();
+
+        if (!destino.toString().toLowerCase().endsWith(".pdf")) {
+            destino = Path.of(destino.toString() + ".pdf");
+        }
+
+        final Path rutaFinal = destino;
+        final Long pacienteId = paciente.getId();
+
+        contenido.setDisable(true);
+        estado.setText("Generando expediente PDF...");
+
+        Task<Path> tarea = new Task<>() {
+            @Override
+            protected Path call() {
+                return reporteService.generarPdf(pacienteId, rutaFinal);
+            }
+        };
+
+        tarea.setOnSucceeded(evento -> {
+            contenido.setDisable(false);
+
+            estado.setText(
+                    "Expediente generado correctamente: " +
+                            tarea.getValue()
+            );
+
+            Alert alerta = new Alert(
+                    Alert.AlertType.INFORMATION,
+                    "El expediente PDF se generó correctamente."
+            );
+
+            alerta.initOwner(ventana);
+            alerta.showAndWait();
+        });
+
+        tarea.setOnFailed(evento -> {
+            contenido.setDisable(false);
+
+            Throwable error = tarea.getException();
+
+            Alert alerta = new Alert(
+                    Alert.AlertType.ERROR,
+                    error == null
+                            ? "No se pudo generar el expediente."
+                            : error.getMessage()
+            );
+
+            alerta.initOwner(ventana);
+            alerta.showAndWait();
+
+            estado.setText("No se pudo generar el expediente PDF.");
+        });
+
+        executor.execute(tarea);
+    }
+
 
     @FXML
     private void initialize() {

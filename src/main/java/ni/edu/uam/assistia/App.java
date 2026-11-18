@@ -25,6 +25,7 @@ import ni.edu.uam.assistia.persistence.HibernateConfig;
 import ni.edu.uam.assistia.persistence.PacienteDao;
 import ni.edu.uam.assistia.util.Async;
 import ni.edu.uam.assistia.util.Alertas;
+import ni.edu.uam.assistia.reporte.ReportePacienteService;
 
 public class App extends Application {
     private final HibernateConfig hibernate = HibernateConfig.compartida();
@@ -56,7 +57,17 @@ public class App extends Application {
         FXMLLoader cuidadores = cargar("cuidadores.fxml");
         cuidadores.setController(new CuidadorController(cuidadorDao, baseDeDatos));
         FXMLLoader pacientes = cargar("pacientes.fxml");
-        pacientes.setController(new PacienteController(new PacienteDao(hibernate), cuidadorDao, baseDeDatos));
+
+        ReportePacienteService reporteService = new ReportePacienteService();
+
+        pacientes.setController(
+                new PacienteController(
+                        new PacienteDao(hibernate),
+                        cuidadorDao,
+                        baseDeDatos,
+                        reporteService
+                )
+        );
 
         Async async = new Async(baseDeDatos);
         Async asyncRed = new Async(red);
