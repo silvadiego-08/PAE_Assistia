@@ -28,6 +28,7 @@ import ni.edu.uam.assistia.util.Alertas;
 public class App extends Application {
     private final HibernateConfig hibernate = HibernateConfig.compartida();
     private final ExecutorService baseDeDatos = Executors.newSingleThreadExecutor();
+    private final ExecutorService red = Executors.newFixedThreadPool(2);
 
     @FXML private StackPane areaPrincipal;
     @FXML private ScrollPane inicio;
@@ -55,8 +56,9 @@ public class App extends Application {
         pacientes.setController(new PacienteController(new PacienteDao(hibernate), cuidadorDao, baseDeDatos));
 
         Async async = new Async(baseDeDatos);
+        Async asyncRed = new Async(red);
         FXMLLoader medicamentos = cargar("medicamentos.fxml");
-        medicamentos.setControllerFactory(tipo -> new MedicamentoController(async));
+        medicamentos.setControllerFactory(tipo -> new MedicamentoController(async, asyncRed));
         FXMLLoader medicos = cargar("medicos.fxml");
         medicos.setControllerFactory(tipo -> new MedicoController(async));
 
@@ -108,6 +110,7 @@ public class App extends Application {
 
     @Override
     public void stop() {
+        red.shutdownNow();
         baseDeDatos.execute(hibernate::close);
         baseDeDatos.shutdown();
     }

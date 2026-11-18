@@ -9,6 +9,28 @@
         <Label text="Gestiona los medicamentos, su presentación y concentración." styleClass="muted" wrapText="true"/>
     </VBox>
     <VBox spacing="16" VBox.vgrow="ALWAYS">
+        <TitledPane fx:id="panelBusqueda" text="Buscar medicamentos en RxNorm" expanded="false">
+            <VBox spacing="12" styleClass="panel">
+                <HBox fx:id="barraBusqueda" spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="txtBuscar" promptText="Ej. acetaminophen" accessibleText="Nombre para buscar en RxNorm"
+                               onAction="#onBuscar" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnBuscar" text="Buscar en línea" onAction="#onBuscar" styleClass="primary-button"/>
+                </HBox>
+                <Label fx:id="lblEstadoBusqueda" styleClass="muted" wrapText="true"/>
+                <TableView fx:id="tablaResultados" minHeight="260" prefHeight="310"
+                           accessibleText="Resultados de la búsqueda de medicamentos en RxNorm">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_LAST_COLUMN"/>
+                    </columnResizePolicy>
+                    <columns>
+                        <TableColumn fx:id="colResultadoRxcui" text="RxCUI" prefWidth="95" minWidth="85"/>
+                        <TableColumn fx:id="colResultadoNombre" text="Nombre en RxNorm" prefWidth="415" minWidth="160"/>
+                    </columns>
+                </TableView>
+                <Button fx:id="btnUsarResultado" text="Usar resultado" onAction="#onUsarResultado"
+                        styleClass="secondary-button"/>
+            </VBox>
+        </TitledPane>
         <VBox spacing="13" styleClass="panel">
             <Label text="Datos del registro" styleClass="section-title"/>
             <GridPane hgap="18" vgap="12">
