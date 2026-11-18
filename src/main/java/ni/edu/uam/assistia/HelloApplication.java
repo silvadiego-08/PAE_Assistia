@@ -23,6 +23,7 @@ import ni.edu.uam.assistia.util.Async;
 public class HelloApplication extends Application {
     private final HibernateConfig hibernate = HibernateConfig.compartida();
     private final ExecutorService baseDeDatos = Executors.newSingleThreadExecutor();
+    private final ExecutorService red = Executors.newFixedThreadPool(2);
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -33,8 +34,9 @@ public class HelloApplication extends Application {
         pacientes.setController(new PacienteController(new PacienteDao(hibernate), cuidadorDao, baseDeDatos));
 
         Async async = new Async(baseDeDatos);
+        Async asyncRed = new Async(red);
         FXMLLoader medicamentos = new FXMLLoader(getClass().getResource("fxml/medicamentos.fxml"));
-        medicamentos.setControllerFactory(tipo -> new MedicamentoController(async));
+        medicamentos.setControllerFactory(tipo -> new MedicamentoController(async, asyncRed));
         FXMLLoader medicos = new FXMLLoader(getClass().getResource("fxml/medicos.fxml"));
         medicos.setControllerFactory(tipo -> new MedicoController(async));
 
@@ -44,15 +46,16 @@ public class HelloApplication extends Application {
                 new Tab("Medicamentos", medicamentos.load()),
                 new Tab("Médicos", medicos.load()));
         pestañas.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        stage.setScene(new Scene(pestañas, 740, 660));
-        stage.setMinWidth(580);
-        stage.setMinHeight(550);
+        stage.setScene(new Scene(pestañas, 900, 780));
+        stage.setMinWidth(700);
+        stage.setMinHeight(650);
         stage.setTitle("Assistia");
         stage.show();
     }
 
     @Override
     public void stop() {
+        red.shutdownNow();
         baseDeDatos.execute(hibernate::close);
         baseDeDatos.shutdown();
     }

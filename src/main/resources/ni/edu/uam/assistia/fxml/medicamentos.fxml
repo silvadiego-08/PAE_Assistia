@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -19,6 +20,29 @@
     </padding>
 
     <Label text="Catálogo de medicamentos" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+    <Label text="RxNorm solo completa el nombre. Revisa y completa principio activo, presentación y concentración antes de guardar."
+           wrapText="true" style="-fx-text-fill: #666;"/>
+
+    <TitledPane fx:id="panelBusqueda" text="Buscar en RxNorm (clic para abrir)" expanded="false">
+        <VBox spacing="8">
+            <HBox fx:id="barraBusqueda" spacing="10">
+                <TextField fx:id="txtBuscar" promptText="Ej. azithromycin"
+                           onAction="#onBuscar" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnBuscar" text="Buscar en línea" onAction="#onBuscar"/>
+            </HBox>
+            <Label fx:id="lblEstadoBusqueda" wrapText="true"
+                   style="-fx-text-fill: #555;"/>
+            <TableView fx:id="tablaResultados" prefHeight="130">
+                <columns>
+                    <TableColumn fx:id="colResultadoNombre" text="Nombre en RxNorm" prefWidth="520"/>
+                    <TableColumn fx:id="colResultadoRxcui" text="RxCUI" prefWidth="110"/>
+                </columns>
+            </TableView>
+            <Button fx:id="btnUsarResultado" text="Usar resultado"
+                    onAction="#onUsarResultado"/>
+        </VBox>
+    </TitledPane>
 
     <GridPane hgap="10" vgap="8">
         <columnConstraints>
