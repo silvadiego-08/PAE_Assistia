@@ -10,12 +10,10 @@ Assistia es una aplicación de escritorio orientada al seguimiento de tratamient
 | --- | --- |
 | Asignatura | Programación de Aplicaciones de Escritorio |
 | Docente | José Durán |
-| Estudiante | Diego Silva |
 | Integrantes del equipo | Mia Flores, Davis Rivera, Claudia Lira y Diego Silva |
 
 El objetivo general es desarrollar un sistema que centralice la información de los pacientes y facilite el seguimiento de sus tratamientos. El alcance del equipo incluye el registro de tomas, la búsqueda de medicamentos con RxNorm y el reporte PDF del historial con JasperReports.
 
-La rama `feat/Diego` contiene los módulos de **Pacientes** y **Cuidadores**, con el registro y la eliminación de asignaciones entre ambos. Los catálogos de **Medicamentos** y **Médicos** están integrados en `main`. Los modelos de **Tratamientos** y **Registro de tomas** se describen como parte del alcance del equipo y corresponden a sus respectivas ramas de desarrollo.
 
 ## 2. Requisitos
 
@@ -29,6 +27,17 @@ La rama `feat/Diego` contiene los módulos de **Pacientes** y **Cuidadores**, co
 La interfaz utiliza **JavaFX y FXML**. La persistencia se implementa con **Jakarta Persistence y Hibernate ORM**.
 
 ### Crear la base de datos local
+
+**Con pgAdmin**
+
+1. Conéctate como administrador y abre **Query Tool** sobre la base `postgres`. Ejecuta [crear-rol-local.sql](scripts/crear-rol-local.sql) si `assistia_local` aún no existe.
+2. En **Login/Group Roles**, actualiza la lista, abre las propiedades de `assistia_local` y configura su contraseña en la pestaña **Definition**.
+3. En un **Query Tool** nuevo sobre `postgres`, activa **Auto-commit** y ejecuta [crear-bd-local.sql](scripts/crear-bd-local.sql). Este archivo contiene únicamente la sentencia `CREATE DATABASE`.
+4. Actualiza **Databases** y abre otro **Query Tool** sobre `assistia`. Ejecuta [crear-tablas.sql](scripts/crear-tablas.sql) completo. Las cinco tablas de la rama aparecen en **Schemas → public → Tables** después de actualizar el árbol.
+
+Omite la creación del rol o de la base si ya existen. Para usar los scripts con otro nombre de base o de rol, adapta las sentencias y los valores de `db.properties`. El script de tablas puede ejecutarse de nuevo sobre el mismo esquema. Si las tablas ya existen, el script conserva su estructura.
+
+**Con psql**
 
 Conéctate al servidor PostgreSQL como administrador usando `psql`. Ajusta `postgres` si tu administrador tiene otro nombre.
 
@@ -45,7 +54,13 @@ CREATE DATABASE assistia OWNER assistia_local;
 \q
 ```
 
-También puedes crear el rol con permiso de inicio de sesión y asignarlo como propietario de `assistia` desde pgAdmin. Si ya tienes una base local de desarrollo, usa su nombre y el usuario correspondiente al configurar la aplicación. Hibernate crea o actualiza las tablas de las entidades registradas cuando se inicializa la conexión.
+Luego ejecuta el script de tablas desde la raíz del proyecto.
+
+```powershell
+psql -U assistia_local -d assistia -v ON_ERROR_STOP=1 -f scripts/crear-tablas.sql
+```
+
+Hibernate también puede crear o actualizar las tablas de las entidades registradas al inicializar la conexión. Los scripts de esta rama cubren Pacientes, Cuidadores, Asignación de cuidadores, Médicos y Medicamentos.
 
 ## 3. Cómo ejecutar el proyecto
 
@@ -56,13 +71,7 @@ También puedes crear el rol con permiso de inicio de sesión y asignarlo como p
    Set-Location PAE_Assistia
    ```
 
-2. **Elige la rama.** El clon abre la rama predeterminada del repositorio. Para reproducir el módulo de Diego, cambia a su rama.
-
-   ```powershell
-   git switch feat/Diego
-   ```
-
-3. **Configura la conexión.** Si aún no tienes `db.properties`, copia la plantilla.
+2. **Configura la conexión.** Si aún no tienes `db.properties`, copia la plantilla.
 
    ```powershell
    Copy-Item db.properties.example db.properties
@@ -78,29 +87,27 @@ También puedes crear el rol con permiso de inicio de sesión y asignarlo como p
 
    Git omite `db.properties`. Si tienes valores definidos en las variables de entorno `DB_URL`, `DB_USER` o `DB_PASSWORD`, estos tienen prioridad sobre el archivo.
 
-4. **Compila e inicia Assistia.** Ejecuta estos comandos en PowerShell desde la carpeta de `pom.xml`.
+3. **Compila e inicia Assistia.** Ejecuta estos comandos en PowerShell desde la carpeta de `pom.xml`.
 
    ```powershell
    .\mvnw.cmd clean compile
    .\mvnw.cmd javafx:run
    ```
 
-   Desde IntelliJ IDEA, puedes abrir `pom.xml` como proyecto Maven, seleccionar JDK 21 y ejecutar el objetivo `javafx:run`. Para verificar la persistencia en `feat/Diego`, crea un paciente y un cuidador ficticios, vincúlalos, reinicia Assistia y comprueba que la asignación se conserva.
+   Desde IntelliJ IDEA, puedes abrir `pom.xml` como proyecto Maven, seleccionar JDK 21 y ejecutar el objetivo `javafx:run`.
 
 ## 4. Modelo de datos
 
-**PK** identifica un registro de forma única y **FK** referencia la clave de otra tabla. El estado indica dónde se verificó el modelo.
-
-| Entidad | Tabla | Atributos principales | Relaciones | Estado |
+| Entidad | Tabla | Atributos principales | Relaciones |  |
 | --- | --- | --- | --- | --- |
-| `Paciente` | `pacientes` | `id` (PK), `nombre`, `fechaNacimiento`, `telefono`. | Un paciente puede aparecer en varias asignaciones y tratamientos. | `feat/Diego` y `main` |
-| `Cuidador` | `cuidadores` | `id` (PK), `nombre`, `telefono`, `correo`. | Un cuidador puede aparecer en varias asignaciones de pacientes. | `feat/Diego` y `main` |
-| `AsignacionCuidador` | `asignaciones_cuidador` | `id` (PK), `paciente_id` (FK), `cuidador_id` (FK), `parentesco`, `responsablePrincipal`. | Cada asignación referencia un paciente y un cuidador. Su combinación es única. | `feat/Diego` y `main` |
-| `Medico` | `medico` | `id` (PK), `nombre`, `especialidad`, `telefono`. | Un médico puede estar asociado a varios tratamientos. | `main` |
-| `Medicamento` | `medicamento` | `id` (PK), `nombre`, `principioActivo`, `presentacion`, `concentracion`. | Un medicamento puede aparecer en varios detalles de tratamiento. | `main` |
-| `Tratamiento` | `tratamientos` | `id` (PK), `paciente_id` (FK), `medico_id` (FK), `fechaInicio`, `fechaFin`, `activo`. | Pertenece a un paciente y a un médico. Puede contener varios detalles. | `feat/Mia` |
-| `DetalleTratamiento` | `detalles_tratamiento` | `id` (PK), `tratamiento_id` (FK), `medicamento_id` (FK), `dosisIndicada`, `unidad`, `instrucciones`. | Pertenece a un tratamiento y referencia un medicamento. Puede tener varias tomas. | `feat/Mia` |
-| `RegistroToma` | `registro_toma` | `id` (PK), `detalle_tratamiento_id` (FK), `fechaHoraProgramada`, `fechaHoraReal`, `estado`, `observacion`. | Cada toma referencia un detalle de tratamiento. La combinación de detalle y hora programada es única. | `feat/registro-tomas`, pendiente de integración |
+| `Paciente` | `pacientes` | `id` (PK), `nombre`, `fechaNacimiento`, `telefono`. | Un paciente puede aparecer en varias asignaciones y tratamientos. | |
+| `Cuidador` | `cuidadores` | `id` (PK), `nombre`, `telefono`, `correo`. | Un cuidador puede aparecer en varias asignaciones de pacientes. |  |
+| `AsignacionCuidador` | `asignaciones_cuidador` | `id` (PK), `paciente_id` (FK), `cuidador_id` (FK), `parentesco`, `responsablePrincipal`. | Cada asignación referencia un paciente y un cuidador. Su combinación es única. |  |
+| `Medico` | `medico` | `id` (PK), `nombre`, `especialidad`, `telefono`. | Un médico puede estar asociado a varios tratamientos. |  |
+| `Medicamento` | `medicamento` | `id` (PK), `nombre`, `principioActivo`, `presentacion`, `concentracion`. | Un medicamento puede aparecer en varios detalles de tratamiento. | |
+| `Tratamiento` | `tratamientos` | `id` (PK), `paciente_id` (FK), `medico_id` (FK), `fechaInicio`, `fechaFin`, `activo`. | Pertenece a un paciente y a un médico. Puede contener varios detalles. |  |
+| `DetalleTratamiento` | `detalles_tratamiento` | `id` (PK), `tratamiento_id` (FK), `medicamento_id` (FK), `dosisIndicada`, `unidad`, `instrucciones`. | Pertenece a un tratamiento y referencia un medicamento. Puede tener varias tomas. |  |
+| `RegistroToma` | `registro_toma` | `id` (PK), `detalle_tratamiento_id` (FK), `fechaHoraProgramada`, `fechaHoraReal`, `estado`, `observacion`. | Cada toma referencia un detalle de tratamiento. La combinación de detalle y hora programada es única. |  |
 
 ## 5. Decisiones de diseño
 

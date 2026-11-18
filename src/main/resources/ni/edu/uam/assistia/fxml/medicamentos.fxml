@@ -1,57 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-<VBox spacing="12" style="-fx-font-size: 16px;"
-      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ni.edu.uam.assistia.controller.MedicamentoController">
-    <padding>
-        <Insets top="16" right="16" bottom="16" left="16"/>
-    </padding>
-
-    <Label text="Catálogo de medicamentos" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
-
-    <GridPane hgap="10" vgap="8">
-        <columnConstraints>
-            <ColumnConstraints minWidth="180"/>
-            <ColumnConstraints hgrow="ALWAYS"/>
-        </columnConstraints>
-
-        <Label text="Nombre *" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtNombre" promptText="Ej. Paracetamol" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-        <Label text="Principio activo *" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtPrincipioActivo" promptText="Ej. Paracetamol" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-        <Label text="Presentación *" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtPresentacion" promptText="Ej. Tableta" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-        <Label text="Concentración *" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtConcentracion" promptText="Ej. 500 mg" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-    </GridPane>
-
-    <HBox fx:id="barraAcciones" spacing="10">
-        <Button text="Guardar" onAction="#onGuardar"/>
-        <Button text="Actualizar" onAction="#onActualizar"/>
-        <Button text="Eliminar" onAction="#onEliminar"/>
-        <Button text="Limpiar" onAction="#onLimpiar"/>
-    </HBox>
-
-    <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
-        <columns>
-            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="220"/>
-            <TableColumn fx:id="colPrincipio" text="Principio activo" prefWidth="220"/>
-            <TableColumn fx:id="colPresentacion" text="Presentación" prefWidth="160"/>
-            <TableColumn fx:id="colConcentracion" text="Concentración" prefWidth="160"/>
-        </columns>
-    </TableView>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.edu.uam.assistia.controller.MedicamentoController" spacing="18" styleClass="module-page">
+    <VBox spacing="5">
+        <Label text="Medicamentos" styleClass="page-title"/>
+        <Label text="Gestiona los medicamentos, su presentación y concentración." styleClass="muted" wrapText="true"/>
+    </VBox>
+    <VBox spacing="16" VBox.vgrow="ALWAYS">
+        <VBox spacing="13" styleClass="panel">
+            <Label text="Datos del registro" styleClass="section-title"/>
+            <GridPane hgap="18" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+                <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="Nombre" styleClass="field-label"/>
+                    <TextField fx:id="txtNombre" promptText="Nombre del medicamento" accessibleText="Nombre"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="Principio activo" styleClass="field-label"/>
+                    <TextField fx:id="txtPrincipioActivo" promptText="Ingrediente activo" accessibleText="Principio activo"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="Presentación" styleClass="field-label"/>
+                    <TextField fx:id="txtPresentacion" promptText="Ej. Tableta" accessibleText="Presentación"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label text="Concentración" styleClass="field-label"/>
+                    <TextField fx:id="txtConcentracion" promptText="Ej. 500 mg" accessibleText="Concentración"/>
+                </VBox>
+            </GridPane>
+            <HBox fx:id="barraAcciones" spacing="10" styleClass="actions">
+                <Button text="Guardar" onAction="#onGuardar" styleClass="primary-button"/>
+                <Button text="Actualizar" onAction="#onActualizar" styleClass="secondary-button"/>
+                <Button text="Limpiar" onAction="#onLimpiar" styleClass="secondary-button"/>
+                <Button text="Eliminar" onAction="#onEliminar" styleClass="danger-button"/>
+            </HBox>
+        </VBox>
+        <VBox spacing="9" styleClass="panel" VBox.vgrow="ALWAYS">
+            <Label text="Lista de medicamentos" styleClass="section-title"/>
+            <TableView fx:id="tabla" minHeight="220" prefHeight="270" VBox.vgrow="ALWAYS">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+                </columnResizePolicy>
+                <columns>
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="190" minWidth="110"/>
+                    <TableColumn fx:id="colPrincipio" text="Principio activo" prefWidth="180" minWidth="140"/>
+                    <TableColumn fx:id="colPresentacion" text="Presentación" prefWidth="145" minWidth="115"/>
+                    <TableColumn fx:id="colConcentracion" text="Concentración" prefWidth="155" minWidth="130"/>
+                </columns>
+                <placeholder><Label text="No hay medicamentos para mostrar." styleClass="muted" wrapText="true"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
 </VBox>
