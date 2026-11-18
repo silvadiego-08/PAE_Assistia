@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="expediente-paciente"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="515"
+              leftMargin="40"
+              rightMargin="40"
+              topMargin="35"
+              bottomMargin="35"
+              whenNoDataType="NoDataSection">
+
+    <style name="Base" isDefault="true"
+           fontName="SansSerif" fontSize="9"/>
+
+    <parameter name="NOMBRE_PACIENTE" class="java.lang.String"/>
+    <parameter name="FECHA_NACIMIENTO" class="java.lang.String"/>
+    <parameter name="TELEFONO" class="java.lang.String"/>
+    <parameter name="GENERADO" class="java.lang.String"/>
+
+    <field name="medicamento" class="java.lang.String"/>
+    <field name="concentracion" class="java.lang.String"/>
+    <field name="presentacion" class="java.lang.String"/>
+    <field name="dosis" class="java.lang.String"/>
+    <field name="unidad" class="java.lang.String"/>
+    <field name="instrucciones" class="java.lang.String"/>
+    <field name="fechaInicio" class="java.lang.String"/>
+    <field name="fechaFin" class="java.lang.String"/>
+    <field name="medico" class="java.lang.String"/>
+    <field name="especialidad" class="java.lang.String"/>
+    <field name="estado" class="java.lang.String"/>
+
+    <title>
+        <band height="150">
+
+            <staticText>
+                <reportElement x="0" y="0" width="515" height="32"/>
+                <textElement textAlignment="Center"
+                             verticalAlignment="Middle">
+                    <font size="21" isBold="true"/>
+                </textElement>
+                <text><![CDATA[ASSISTIA]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="0" y="34" width="515" height="24"/>
+                <textElement textAlignment="Center"
+                             verticalAlignment="Middle">
+                    <font size="13" isBold="true"/>
+                </textElement>
+                <text><![CDATA[EXPEDIENTE MÉDICO DEL PACIENTE]]></text>
+            </staticText>
+
+            <line>
+                <reportElement x="0" y="64" width="515" height="1"/>
+            </line>
+
+            <staticText>
+                <reportElement x="0" y="75" width="515" height="20"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[INFORMACIÓN PERSONAL]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="0" y="99" width="515" height="18"/>
+                <textFieldExpression><![CDATA[
+                    "Nombre: " + $P{NOMBRE_PACIENTE}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="0" y="119" width="250" height="18"/>
+                <textFieldExpression><![CDATA[
+                    "Fecha de nacimiento: " + $P{FECHA_NACIMIENTO}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="265" y="119" width="250" height="18"/>
+                <textFieldExpression><![CDATA[
+                    "Teléfono: " + $P{TELEFONO}
+                ]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="30">
+            <staticText>
+                <reportElement mode="Opaque"
+                               backcolor="#DCECE7"
+                               x="0" y="0" width="515" height="30"/>
+                <box padding="5">
+                    <pen lineWidth="0.5"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TRATAMIENTOS Y MEDICAMENTOS]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="116">
+
+            <rectangle>
+                <reportElement x="0" y="0" width="515" height="110"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#C8D5D1"/>
+                </graphicElement>
+            </rectangle>
+
+            <textField>
+                <reportElement x="8" y="5" width="300" height="17"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[
+                    $F{medicamento}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="315" y="5" width="190" height="17"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[
+                    $F{estado}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="8" y="25" width="245" height="16"/>
+                <textFieldExpression><![CDATA[
+                    "Concentración: " + $F{concentracion}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="260" y="25" width="245" height="16"/>
+                <textFieldExpression><![CDATA[
+                    "Presentación: " + $F{presentacion}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="8" y="43" width="245" height="16"/>
+                <textFieldExpression><![CDATA[
+                    "Dosis: " + $F{dosis} + " " + $F{unidad}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="260" y="43" width="245" height="16"/>
+                <textFieldExpression><![CDATA[
+                    "Inicio: " + $F{fechaInicio}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="8" y="61" width="245" height="16"/>
+                <textFieldExpression><![CDATA[
+                    "Finalización: " + $F{fechaFin}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="260" y="61" width="245" height="16"/>
+                <textFieldExpression><![CDATA[
+                    "Médico: " + $F{medico}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="8" y="79" width="497" height="16"/>
+                <textFieldExpression><![CDATA[
+                    "Especialidad: " + $F{especialidad}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField textAdjust="StretchHeight">
+                <reportElement x="8" y="96" width="497" height="14"/>
+                <textFieldExpression><![CDATA[
+                    "Instrucciones: " + $F{instrucciones}
+                ]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </detail>
+
+    <pageFooter>
+        <band height="25">
+            <textField>
+                <reportElement x="0" y="5" width="350" height="16"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[
+                    "Generado: " + $P{GENERADO}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="415" y="5" width="100" height="16"/>
+                <textElement textAlignment="Right">
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[
+                    "Página " + $V{PAGE_NUMBER}
+                ]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <noData>
+        <band height="70">
+            <staticText>
+                <reportElement mode="Opaque"
+                               backcolor="#F0F5F3"
+                               x="0" y="5" width="515" height="45"/>
+                <box padding="8">
+                    <pen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center"
+                             verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Este paciente no tiene tratamientos registrados.]]></text>
+            </staticText>
+        </band>
+    </noData>
+
+</jasperReport>
