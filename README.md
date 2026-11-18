@@ -10,12 +10,10 @@ Assistia es una aplicación de escritorio orientada al seguimiento de tratamient
 | --- | --- |
 | Asignatura | Programación de Aplicaciones de Escritorio |
 | Docente | José Durán |
-| Estudiante | Diego Silva |
 | Integrantes del equipo | Mia Flores, Davis Rivera, Claudia Lira y Diego Silva |
 
 El objetivo general es desarrollar un sistema que centralice la información de los pacientes y facilite el seguimiento de sus tratamientos. El alcance del equipo incluye el registro de tomas, la búsqueda de medicamentos con RxNorm y el reporte PDF del historial con JasperReports.
 
-La rama `feat/Diego` contiene los módulos de **Pacientes** y **Cuidadores**, con el registro y la eliminación de asignaciones entre ambos. Los catálogos de **Medicamentos** y **Médicos** están integrados en `main`. Los modelos de **Tratamientos** y **Registro de tomas** se describen como parte del alcance del equipo y corresponden a sus respectivas ramas de desarrollo.
 
 ## 2. Requisitos
 
@@ -56,13 +54,7 @@ También puedes crear el rol con permiso de inicio de sesión y asignarlo como p
    Set-Location PAE_Assistia
    ```
 
-2. **Elige la rama.** El clon abre la rama predeterminada del repositorio. Para reproducir el módulo de Diego, cambia a su rama.
-
-   ```powershell
-   git switch feat/Diego
-   ```
-
-3. **Configura la conexión.** Si aún no tienes `db.properties`, copia la plantilla.
+2. **Configura la conexión.** Si aún no tienes `db.properties`, copia la plantilla.
 
    ```powershell
    Copy-Item db.properties.example db.properties
@@ -78,29 +70,27 @@ También puedes crear el rol con permiso de inicio de sesión y asignarlo como p
 
    Git omite `db.properties`. Si tienes valores definidos en las variables de entorno `DB_URL`, `DB_USER` o `DB_PASSWORD`, estos tienen prioridad sobre el archivo.
 
-4. **Compila e inicia Assistia.** Ejecuta estos comandos en PowerShell desde la carpeta de `pom.xml`.
+3. **Compila e inicia Assistia.** Ejecuta estos comandos en PowerShell desde la carpeta de `pom.xml`.
 
    ```powershell
    .\mvnw.cmd clean compile
    .\mvnw.cmd javafx:run
    ```
 
-   Desde IntelliJ IDEA, puedes abrir `pom.xml` como proyecto Maven, seleccionar JDK 21 y ejecutar el objetivo `javafx:run`. Para verificar la persistencia en `feat/Diego`, crea un paciente y un cuidador ficticios, vincúlalos, reinicia Assistia y comprueba que la asignación se conserva.
+   Desde IntelliJ IDEA, puedes abrir `pom.xml` como proyecto Maven, seleccionar JDK 21 y ejecutar el objetivo `javafx:run`.
 
 ## 4. Modelo de datos
 
-**PK** identifica un registro de forma única y **FK** referencia la clave de otra tabla. El estado indica dónde se verificó el modelo.
-
-| Entidad | Tabla | Atributos principales | Relaciones | Estado |
+| Entidad | Tabla | Atributos principales | Relaciones |  |
 | --- | --- | --- | --- | --- |
-| `Paciente` | `pacientes` | `id` (PK), `nombre`, `fechaNacimiento`, `telefono`. | Un paciente puede aparecer en varias asignaciones y tratamientos. | `feat/Diego` y `main` |
-| `Cuidador` | `cuidadores` | `id` (PK), `nombre`, `telefono`, `correo`. | Un cuidador puede aparecer en varias asignaciones de pacientes. | `feat/Diego` y `main` |
-| `AsignacionCuidador` | `asignaciones_cuidador` | `id` (PK), `paciente_id` (FK), `cuidador_id` (FK), `parentesco`, `responsablePrincipal`. | Cada asignación referencia un paciente y un cuidador. Su combinación es única. | `feat/Diego` y `main` |
-| `Medico` | `medico` | `id` (PK), `nombre`, `especialidad`, `telefono`. | Un médico puede estar asociado a varios tratamientos. | `main` |
-| `Medicamento` | `medicamento` | `id` (PK), `nombre`, `principioActivo`, `presentacion`, `concentracion`. | Un medicamento puede aparecer en varios detalles de tratamiento. | `main` |
-| `Tratamiento` | `tratamientos` | `id` (PK), `paciente_id` (FK), `medico_id` (FK), `fechaInicio`, `fechaFin`, `activo`. | Pertenece a un paciente y a un médico. Puede contener varios detalles. | `feat/Mia` |
-| `DetalleTratamiento` | `detalles_tratamiento` | `id` (PK), `tratamiento_id` (FK), `medicamento_id` (FK), `dosisIndicada`, `unidad`, `instrucciones`. | Pertenece a un tratamiento y referencia un medicamento. Puede tener varias tomas. | `feat/Mia` |
-| `RegistroToma` | `registro_toma` | `id` (PK), `detalle_tratamiento_id` (FK), `fechaHoraProgramada`, `fechaHoraReal`, `estado`, `observacion`. | Cada toma referencia un detalle de tratamiento. La combinación de detalle y hora programada es única. | `feat/registro-tomas`, pendiente de integración |
+| `Paciente` | `pacientes` | `id` (PK), `nombre`, `fechaNacimiento`, `telefono`. | Un paciente puede aparecer en varias asignaciones y tratamientos. | |
+| `Cuidador` | `cuidadores` | `id` (PK), `nombre`, `telefono`, `correo`. | Un cuidador puede aparecer en varias asignaciones de pacientes. |  |
+| `AsignacionCuidador` | `asignaciones_cuidador` | `id` (PK), `paciente_id` (FK), `cuidador_id` (FK), `parentesco`, `responsablePrincipal`. | Cada asignación referencia un paciente y un cuidador. Su combinación es única. |  |
+| `Medico` | `medico` | `id` (PK), `nombre`, `especialidad`, `telefono`. | Un médico puede estar asociado a varios tratamientos. |  |
+| `Medicamento` | `medicamento` | `id` (PK), `nombre`, `principioActivo`, `presentacion`, `concentracion`. | Un medicamento puede aparecer en varios detalles de tratamiento. | |
+| `Tratamiento` | `tratamientos` | `id` (PK), `paciente_id` (FK), `medico_id` (FK), `fechaInicio`, `fechaFin`, `activo`. | Pertenece a un paciente y a un médico. Puede contener varios detalles. |  |
+| `DetalleTratamiento` | `detalles_tratamiento` | `id` (PK), `tratamiento_id` (FK), `medicamento_id` (FK), `dosisIndicada`, `unidad`, `instrucciones`. | Pertenece a un tratamiento y referencia un medicamento. Puede tener varias tomas. |  |
+| `RegistroToma` | `registro_toma` | `id` (PK), `detalle_tratamiento_id` (FK), `fechaHoraProgramada`, `fechaHoraReal`, `estado`, `observacion`. | Cada toma referencia un detalle de tratamiento. La combinación de detalle y hora programada es única. |  |
 
 ## 5. Decisiones de diseño
 
