@@ -33,7 +33,7 @@ La interfaz utiliza **JavaFX y FXML**. La persistencia se implementa con **Jakar
 1. Conéctate como administrador y abre **Query Tool** sobre la base `postgres`. Ejecuta [crear-rol-local.sql](scripts/crear-rol-local.sql) si `assistia_local` aún no existe.
 2. En **Login/Group Roles**, actualiza la lista, abre las propiedades de `assistia_local` y configura su contraseña en la pestaña **Definition**.
 3. En un **Query Tool** nuevo sobre `postgres`, activa **Auto-commit** y ejecuta [crear-bd-local.sql](scripts/crear-bd-local.sql). Este archivo contiene únicamente la sentencia `CREATE DATABASE`.
-4. Actualiza **Databases** y abre otro **Query Tool** sobre `assistia`. Ejecuta [crear-tablas.sql](scripts/crear-tablas.sql) completo. Las cinco tablas de la rama aparecen en **Schemas → public → Tables** después de actualizar el árbol.
+4. Actualiza **Databases** y abre otro **Query Tool** sobre `assistia`. Ejecuta [crear-tablas.sql](scripts/crear-tablas.sql) completo. Las siete tablas de la rama aparecen en **Schemas → public → Tables** después de actualizar el árbol.
 
 Omite la creación del rol o de la base si ya existen. Para usar los scripts con otro nombre de base o de rol, adapta las sentencias y los valores de `db.properties`. El script de tablas puede ejecutarse de nuevo sobre el mismo esquema. Si las tablas ya existen, el script conserva su estructura.
 
@@ -60,7 +60,7 @@ Luego ejecuta el script de tablas desde la raíz del proyecto.
 psql -U assistia_local -d assistia -v ON_ERROR_STOP=1 -f scripts/crear-tablas.sql
 ```
 
-Hibernate también puede crear o actualizar las tablas de las entidades registradas al inicializar la conexión. Los scripts de esta rama cubren Pacientes, Cuidadores, Asignación de cuidadores, Médicos y Medicamentos.
+Hibernate también puede crear o actualizar las tablas de las entidades registradas al inicializar la conexión. El script incluye `tratamientos` y `detalles_tratamiento` y se puede volver a ejecutar sobre una base local creada para los catálogos.
 
 ## 3. Cómo ejecutar el proyecto
 
