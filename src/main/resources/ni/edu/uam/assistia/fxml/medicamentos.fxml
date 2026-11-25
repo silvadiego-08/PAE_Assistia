@@ -23,8 +23,8 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_LAST_COLUMN"/>
                     </columnResizePolicy>
                     <columns>
-                        <TableColumn fx:id="colResultadoRxcui" text="RxCUI" prefWidth="95" minWidth="85"/>
-                        <TableColumn fx:id="colResultadoNombre" text="Nombre en RxNorm" prefWidth="415" minWidth="160"/>
+                        <TableColumn fx:id="colResultadoNombre" text="Nombre" prefWidth="330" minWidth="160"/>
+                        <TableColumn fx:id="colResultadoDosis" text="Dosis" prefWidth="150" minWidth="110"/>
                     </columns>
                 </TableView>
                 <Button fx:id="btnUsarResultado" text="Usar resultado" onAction="#onUsarResultado"
@@ -53,6 +53,11 @@
                 <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <Label text="Concentración" styleClass="field-label"/>
                     <TextField fx:id="txtConcentracion" promptText="Ej. 500 mg" accessibleText="Concentración"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                    <Label text="Descripción" styleClass="field-label"/>
+                    <TextArea fx:id="txtDescripcion" promptText="Detalle adicional del medicamento (opcional)"
+                              prefRowCount="2" wrapText="true" accessibleText="Descripción"/>
                 </VBox>
             </GridPane>
             <HBox fx:id="barraAcciones" spacing="10" styleClass="actions">

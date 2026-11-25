@@ -34,6 +34,9 @@ public class Medicamento {
     @Column(name = "concentracion", nullable = false, length = 60)
     private String concentracion;
 
+    @Column(name = "descripcion", length = 300)
+    private String descripcion;
+
     public Medicamento() { }
 
     public Medicamento(String nombre, String principioActivo, String presentacion, String concentracion) {
@@ -57,6 +60,9 @@ public class Medicamento {
 
     public String getConcentracion() { return concentracion; }
     public void setConcentracion(String concentracion) { this.concentracion = concentracion; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
     @Override
     public boolean equals(Object o) {
