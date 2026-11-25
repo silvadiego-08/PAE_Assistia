@@ -66,6 +66,8 @@ public final class PacienteController {
 
     }
 
+
+
     @FXML
     private void generarReporte() {
 
@@ -98,7 +100,7 @@ public final class PacienteController {
 
             VistaPreviaReporte vista = new VistaPreviaReporte();
 
-            vista.mostrar(tarea.getValue(), ventana);
+            vista.mostrar(tarea.getValue(), ventana, reporteService);
         });
 
         tarea.setOnFailed(evento -> {

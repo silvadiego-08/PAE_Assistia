@@ -13,6 +13,10 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +39,7 @@ public class ReportePacienteService {
 
     private static final DateTimeFormatter FECHA_HORA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
 
     private JasperReport plantillaCompilada;
 
@@ -237,4 +242,64 @@ public class ReportePacienteService {
             List<FilaPacienteReporte> filas
     ) {
     }
+
+    public Path exportarExcel(JasperPrint impreso, Path destino) {
+
+        if (impreso == null) {
+            throw new IllegalArgumentException(
+                    "No existe un reporte generado.");
+        }
+
+        if (destino == null) {
+            throw new IllegalArgumentException(
+                    "Seleccione dónde guardar el archivo Excel.");
+        }
+
+        try {
+            Path ruta = destino.toAbsolutePath();
+
+            if (ruta.getParent() != null) {
+                Files.createDirectories(ruta.getParent());
+            }
+
+            JRXlsxExporter exportador = new JRXlsxExporter();
+
+            exportador.setExporterInput(
+                    new SimpleExporterInput(impreso)
+            );
+
+            exportador.setExporterOutput(
+                    new SimpleOutputStreamExporterOutput(
+                            ruta.toFile()
+                    )
+            );
+
+            SimpleXlsxReportConfiguration configuracion =
+                    new SimpleXlsxReportConfiguration();
+
+            configuracion.setOnePagePerSheet(false);
+            configuracion.setDetectCellType(true);
+            configuracion.setRemoveEmptySpaceBetweenRows(true);
+            configuracion.setRemoveEmptySpaceBetweenColumns(true);
+            configuracion.setWhitePageBackground(false);
+
+            configuracion.setSheetNames(
+                    new String[]{"Expediente médico"}
+            );
+
+            exportador.setConfiguration(configuracion);
+
+            exportador.exportReport();
+
+            return ruta;
+
+        } catch (JRException | IOException error) {
+
+            throw new ReporteException(
+                    "No se pudo exportar el expediente a Excel.",
+                    error
+            );
+        }
+    }
+
 }
