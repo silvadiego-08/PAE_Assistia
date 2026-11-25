@@ -110,6 +110,7 @@ public class App extends Application {
         pagina.setFitToHeight(true);
         pagina.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         pagina.setAccessibleText(enlace.getText());
+        pagina.setAccessibleText(enlace.getText());
         enlace.setOnAction(evento -> {
             try {
                 if (pagina.getContent() == null) {

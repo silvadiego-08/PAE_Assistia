@@ -4,130 +4,355 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ni.edu.uam.assistia.controller.TratamientoController"
-      fx:id="pagina" spacing="18" styleClass="module-page">
+      fx:id="pagina"
+      spacing="18"
+      styleClass="module-page">
+
     <Label text="Tratamientos" styleClass="page-title"/>
 
-    <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="treatment-tabs">
+    <TabPane tabClosingPolicy="UNAVAILABLE"
+             styleClass="treatment-tabs"
+             VBox.vgrow="ALWAYS"
+             minHeight="0">
+
         <Tab text="Historial">
-            <VBox>
-                <VBox fx:id="historial" spacing="12" styleClass="panel">
-                    <FlowPane hgap="10" vgap="8">
-                        <Button text="Nuevo tratamiento" onAction="#nuevo" styleClass="primary-button"/>
-                        <Button text="Recargar" onAction="#recargar" styleClass="secondary-button"/>
-                    </FlowPane>
-                    <ListView fx:id="listaTratamientos" minHeight="170" prefHeight="280" fixedCellSize="36"
-                              accessibleText="Historial de tratamientos">
-                        <placeholder>
-                            <Label text="Todavía no hay tratamientos registrados." styleClass="muted"/>
-                        </placeholder>
-                    </ListView>
-                    <HBox alignment="CENTER_LEFT" spacing="12">
-                        <Button fx:id="btnAbrir" text="Ver o editar" onAction="#abrirSeleccionado"
-                                styleClass="secondary-button"/>
-                        <Label fx:id="lblHistorial" text="Selecciona un tratamiento del historial." wrapText="true"
-                               styleClass="muted" HBox.hgrow="ALWAYS"/>
-                    </HBox>
+
+            <ScrollPane fitToWidth="true"
+                        fitToHeight="false"
+                        hbarPolicy="NEVER"
+                        vbarPolicy="AS_NEEDED">
+
+                <VBox>
+
+                    <VBox fx:id="historial"
+                          spacing="12"
+                          styleClass="panel">
+
+                        <FlowPane hgap="10" vgap="8">
+                            <Button text="Nuevo tratamiento"
+                                    onAction="#nuevo"
+                                    styleClass="primary-button"/>
+
+                            <Button text="Recargar"
+                                    onAction="#recargar"
+                                    styleClass="secondary-button"/>
+                        </FlowPane>
+
+                        <ListView fx:id="listaTratamientos"
+                                  minHeight="170"
+                                  prefHeight="280"
+                                  fixedCellSize="36"
+                                  accessibleText="Historial de tratamientos">
+
+                            <placeholder>
+                                <Label text="Todavía no hay tratamientos registrados."
+                                       styleClass="muted"/>
+                            </placeholder>
+
+                        </ListView>
+
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+
+                            <Button fx:id="btnAbrir"
+                                    text="Ver o editar"
+                                    onAction="#abrirSeleccionado"
+                                    styleClass="secondary-button"/>
+
+                            <Label fx:id="lblHistorial"
+                                   text="Selecciona un tratamiento del historial."
+                                   wrapText="true"
+                                   styleClass="muted"
+                                   HBox.hgrow="ALWAYS"/>
+
+                        </HBox>
+
+                    </VBox>
+
+                    <VBox fx:id="editor"
+                          visible="false"
+                          managed="false"
+                          spacing="12"
+                          styleClass="panel">
+
+                        <Label fx:id="lblEditor"
+                               styleClass="section-title"
+                               wrapText="true"/>
+
+                        <GridPane hgap="16" vgap="12">
+
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="0"
+                                  GridPane.rowIndex="0">
+
+                                <Label text="Paciente"
+                                       styleClass="field-label"/>
+
+                                <ComboBox fx:id="cbPaciente"
+                                          promptText="Seleccione un paciente"
+                                          accessibleText="Paciente del tratamiento"
+                                          maxWidth="Infinity"/>
+
+                            </VBox>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="1"
+                                  GridPane.rowIndex="0">
+
+                                <Label text="Médico"
+                                       styleClass="field-label"/>
+
+                                <ComboBox fx:id="cbMedico"
+                                          promptText="Seleccione un médico"
+                                          accessibleText="Médico"
+                                          maxWidth="Infinity"/>
+
+                            </VBox>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="0"
+                                  GridPane.rowIndex="1">
+
+                                <Label text="Fecha de inicio"
+                                       styleClass="field-label"/>
+
+                                <DatePicker fx:id="dpInicio"
+                                            accessibleText="Fecha de inicio"
+                                            maxWidth="Infinity"/>
+
+                            </VBox>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="1"
+                                  GridPane.rowIndex="1">
+
+                                <Label text="Fecha de fin (opcional)"
+                                       styleClass="field-label"/>
+
+                                <DatePicker fx:id="dpFin"
+                                            accessibleText="Fecha de fin"
+                                            maxWidth="Infinity"/>
+
+                            </VBox>
+
+                        </GridPane>
+
+                        <Label text="Medicamentos del tratamiento"
+                               styleClass="section-title"/>
+
+                        <Label text="Puedes guardar directamente con un medicamento. Para indicar otro, añade el actual a la lista."
+                               styleClass="muted"
+                               wrapText="true"/>
+
+                        <GridPane hgap="16" vgap="12">
+
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25"/>
+                            </columnConstraints>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="0"
+                                  GridPane.rowIndex="0">
+
+                                <Label text="Medicamento"
+                                       styleClass="field-label"/>
+
+                                <ComboBox fx:id="cbMedicamento"
+                                          promptText="Seleccione un medicamento"
+                                          accessibleText="Medicamento"
+                                          maxWidth="Infinity"/>
+
+                            </VBox>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="1"
+                                  GridPane.rowIndex="0">
+
+                                <Label text="Dosis"
+                                       styleClass="field-label"/>
+
+                                <TextField fx:id="txtDosis"
+                                           accessibleText="Dosis indicada"/>
+
+                            </VBox>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="2"
+                                  GridPane.rowIndex="0">
+
+                                <Label text="Unidad"
+                                       styleClass="field-label"/>
+
+                                <ComboBox fx:id="cbUnidad"
+                                          accessibleText="Unidad de la dosis"
+                                          maxWidth="Infinity"/>
+
+                            </VBox>
+
+                            <VBox spacing="5"
+                                  GridPane.columnIndex="0"
+                                  GridPane.columnSpan="3"
+                                  GridPane.rowIndex="1">
+
+                                <Label text="Instrucciones (opcional)"
+                                       styleClass="field-label"/>
+
+                                <TextField fx:id="txtInstrucciones"
+                                           accessibleText="Instrucciones del medicamento"/>
+
+                            </VBox>
+
+                        </GridPane>
+
+                        <FlowPane hgap="10" vgap="8">
+
+                            <Button text="Añadir a la lista"
+                                    onAction="#agregarMedicamento"
+                                    styleClass="secondary-button"/>
+
+                            <Button fx:id="btnQuitar"
+                                    text="Quitar de la lista"
+                                    onAction="#quitarMedicamento"
+                                    disable="true"
+                                    styleClass="secondary-button"/>
+
+                        </FlowPane>
+
+                        <TableView fx:id="tablaDetalles"
+                                   minHeight="120"
+                                   prefHeight="156"
+                                   accessibleText="Medicamentos asignados al tratamiento">
+
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+                            </columnResizePolicy>
+
+                            <columns>
+
+                                <TableColumn fx:id="colMedicamento"
+                                             text="Medicamento"
+                                             minWidth="150"
+                                             prefWidth="260"/>
+
+                                <TableColumn fx:id="colDosis"
+                                             text="Dosis"
+                                             minWidth="85"
+                                             prefWidth="100"/>
+
+                                <TableColumn fx:id="colInstrucciones"
+                                             text="Instrucciones"
+                                             minWidth="110"
+                                             prefWidth="200"/>
+
+                            </columns>
+
+                        </TableView>
+
+                        <FlowPane hgap="10"
+                                  vgap="8"
+                                  styleClass="actions">
+
+                            <Button fx:id="btnGuardar"
+                                    text="Guardar tratamiento"
+                                    onAction="#guardar"
+                                    styleClass="primary-button"/>
+
+                            <Button text="Cancelar"
+                                    onAction="#cancelar"
+                                    styleClass="secondary-button"/>
+
+                            <Button fx:id="btnDesactivar"
+                                    text="Desactivar tratamiento"
+                                    onAction="#desactivar"
+                                    visible="false"
+                                    styleClass="danger-button"/>
+
+                        </FlowPane>
+
+                        <Label fx:id="lblEstado"
+                               styleClass="muted"
+                               wrapText="true"/>
+
+                    </VBox>
+
                 </VBox>
-                <VBox fx:id="editor" visible="false" managed="false" spacing="12" styleClass="panel">
-                    <Label fx:id="lblEditor" styleClass="section-title" wrapText="true"/>
-                    <GridPane hgap="16" vgap="12">
-                        <columnConstraints>
-                            <ColumnConstraints percentWidth="50"/>
-                            <ColumnConstraints percentWidth="50"/>
-                        </columnConstraints>
-                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <Label text="Paciente" styleClass="field-label"/>
-                            <ComboBox fx:id="cbPaciente" promptText="Seleccione un paciente" accessibleText="Paciente del tratamiento" maxWidth="Infinity"/>
-                        </VBox>
-                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label text="Médico" styleClass="field-label"/>
-                            <ComboBox fx:id="cbMedico" promptText="Seleccione un médico" accessibleText="Médico" maxWidth="Infinity"/>
-                        </VBox>
-                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                            <Label text="Fecha de inicio" styleClass="field-label"/>
-                            <DatePicker fx:id="dpInicio" accessibleText="Fecha de inicio" maxWidth="Infinity"/>
-                        </VBox>
-                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <Label text="Fecha de fin (opcional)" styleClass="field-label"/>
-                            <DatePicker fx:id="dpFin" accessibleText="Fecha de fin" maxWidth="Infinity"/>
-                        </VBox>
-                    </GridPane>
-                    <Label text="Medicamentos del tratamiento" styleClass="section-title"/>
-                    <Label text="Puedes guardar directamente con un medicamento. Para indicar otro, añade el actual a la lista."
-                           styleClass="muted" wrapText="true"/>
-                    <GridPane hgap="16" vgap="12">
-                        <columnConstraints>
-                            <ColumnConstraints percentWidth="50"/>
-                            <ColumnConstraints percentWidth="25"/>
-                            <ColumnConstraints percentWidth="25"/>
-                        </columnConstraints>
-                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <Label text="Medicamento" styleClass="field-label"/>
-                            <ComboBox fx:id="cbMedicamento" promptText="Seleccione un medicamento"
-                                      accessibleText="Medicamento" maxWidth="Infinity"/>
-                        </VBox>
-                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label text="Dosis" styleClass="field-label"/>
-                            <TextField fx:id="txtDosis" accessibleText="Dosis indicada"/>
-                        </VBox>
-                        <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                            <Label text="Unidad" styleClass="field-label"/>
-                            <ComboBox fx:id="cbUnidad" accessibleText="Unidad de la dosis" maxWidth="Infinity"/>
-                        </VBox>
-                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="1">
-                            <Label text="Instrucciones (opcional)" styleClass="field-label"/>
-                            <TextField fx:id="txtInstrucciones" accessibleText="Instrucciones del medicamento"/>
-                        </VBox>
-                    </GridPane>
-                    <FlowPane hgap="10" vgap="8">
-                        <Button text="Añadir a la lista" onAction="#agregarMedicamento" styleClass="secondary-button"/>
-                        <Button fx:id="btnQuitar" text="Quitar de la lista" onAction="#quitarMedicamento" disable="true" styleClass="secondary-button"/>
-                    </FlowPane>
-                    <TableView fx:id="tablaDetalles" minHeight="120" prefHeight="156"
-                               accessibleText="Medicamentos asignados al tratamiento">
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
-                        </columnResizePolicy>
-                        <columns>
-                            <TableColumn fx:id="colMedicamento" text="Medicamento" minWidth="150" prefWidth="260"/>
-                            <TableColumn fx:id="colDosis" text="Dosis" minWidth="85" prefWidth="100"/>
-                            <TableColumn fx:id="colInstrucciones" text="Instrucciones" minWidth="110" prefWidth="200"/>
-                        </columns>
-                    </TableView>
-                    <FlowPane hgap="10" vgap="8" styleClass="actions">
-                        <Button fx:id="btnGuardar" text="Guardar tratamiento" onAction="#guardar" styleClass="primary-button"/>
-                        <Button text="Cancelar" onAction="#cancelar" styleClass="secondary-button"/>
-                        <Button fx:id="btnDesactivar" text="Desactivar tratamiento" onAction="#desactivar"
-                                visible="false" styleClass="danger-button"/>
-                    </FlowPane>
-                    <Label fx:id="lblEstado" styleClass="muted" wrapText="true"/>
-                </VBox>
-            </VBox>
+
+            </ScrollPane>
+
         </Tab>
+
         <Tab text="Medicamentos activos">
+
             <VBox spacing="12" styleClass="panel">
-                <Label text="Consulta por paciente" styleClass="section-title" wrapText="true"/>
+
+                <Label text="Consulta por paciente"
+                       styleClass="section-title"
+                       wrapText="true"/>
+
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <ComboBox fx:id="cbPacienteConsulta" promptText="Seleccione un paciente"
-                              accessibleText="Paciente para consultar tratamientos activos" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-                    <Button text="Consultar" onAction="#consultarActivos" styleClass="primary-button"/>
+
+                    <ComboBox fx:id="cbPacienteConsulta"
+                              promptText="Seleccione un paciente"
+                              accessibleText="Paciente para consultar tratamientos activos"
+                              maxWidth="Infinity"
+                              HBox.hgrow="ALWAYS"/>
+
+                    <Button text="Consultar"
+                            onAction="#consultarActivos"
+                            styleClass="primary-button"/>
+
                 </HBox>
-                <Label fx:id="lblConsulta" text="Selecciona un paciente y pulsa «Consultar»." styleClass="muted" wrapText="true"/>
-                <TableView fx:id="tablaActivos" minHeight="178" prefHeight="220"
+
+                <Label fx:id="lblConsulta"
+                       text="Selecciona un paciente y pulsa «Consultar»."
+                       styleClass="muted"
+                       wrapText="true"/>
+
+                <TableView fx:id="tablaActivos"
+                           minHeight="178"
+                           prefHeight="220"
                            accessibleText="Medicamentos de tratamientos activos del paciente">
+
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
                     </columnResizePolicy>
+
                     <columns>
-                        <TableColumn fx:id="colActivoTratamiento" text="Tratamiento" minWidth="120" prefWidth="133"/>
-                        <TableColumn fx:id="colActivoMedicamento" text="Medicamento" minWidth="150" prefWidth="300"/>
-                        <TableColumn fx:id="colActivoDosis" text="Dosis" minWidth="85" prefWidth="100"/>
+
+                        <TableColumn fx:id="colActivoTratamiento"
+                                     text="Tratamiento"
+                                     minWidth="120"
+                                     prefWidth="133"/>
+
+                        <TableColumn fx:id="colActivoMedicamento"
+                                     text="Medicamento"
+                                     minWidth="150"
+                                     prefWidth="300"/>
+
+                        <TableColumn fx:id="colActivoDosis"
+                                     text="Dosis"
+                                     minWidth="85"
+                                     prefWidth="100"/>
+
                     </columns>
+
                     <placeholder>
-                        <Label text="No hay resultados para mostrar." styleClass="muted"/>
+                        <Label text="No hay resultados para mostrar."
+                               styleClass="muted"/>
                     </placeholder>
+
                 </TableView>
+
             </VBox>
+
         </Tab>
+
     </TabPane>
+
 </VBox>
