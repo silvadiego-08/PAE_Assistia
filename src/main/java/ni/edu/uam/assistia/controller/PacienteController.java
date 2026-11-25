@@ -25,10 +25,10 @@ import ni.edu.uam.assistia.model.Cuidador;
 import ni.edu.uam.assistia.model.Paciente;
 import ni.edu.uam.assistia.persistence.CuidadorDao;
 import ni.edu.uam.assistia.persistence.PacienteDao;
-import java.nio.file.Path;
-import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import ni.edu.uam.assistia.reporte.ReportePacienteService;
+import net.sf.jasperreports.engine.JasperPrint;
+import ni.edu.uam.assistia.reporte.VistaPreviaReporte;
 
 public final class PacienteController {
     private final PacienteDao pacientes;
@@ -66,6 +66,8 @@ public final class PacienteController {
 
     }
 
+
+
     @FXML
     private void generarReporte() {
 
@@ -75,68 +77,44 @@ public final class PacienteController {
             return;
         }
 
-        FileChooser selector = new FileChooser();
-        selector.setTitle("Guardar expediente médico");
-        selector.setInitialFileName(
-                "expediente_" +
-                        paciente.getNombre().trim().replaceAll("[^a-zA-Z0-9_-]", "_") +
-                        ".pdf"
-        );
-
-        selector.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf")
-        );
-
         Window ventana = contenido.getScene().getWindow();
 
-        java.io.File archivo = selector.showSaveDialog(ventana);
-
-        if (archivo == null) {
-            return;
-        }
-
-        Path destino = archivo.toPath();
-
-        if (!destino.toString().toLowerCase().endsWith(".pdf")) {
-            destino = Path.of(destino.toString() + ".pdf");
-        }
-
-        final Path rutaFinal = destino;
         final Long pacienteId = paciente.getId();
 
         contenido.setDisable(true);
-        estado.setText("Generando expediente PDF...");
+        estado.setText("Generando vista previa del expediente...");
 
-        Task<Path> tarea = new Task<>() {
+        Task<JasperPrint> tarea = new Task<>() {
+
             @Override
-            protected Path call() {
-                return reporteService.generarPdf(pacienteId, rutaFinal);
+            protected JasperPrint call() {
+                return reporteService.generarReporte(pacienteId);
             }
         };
 
         tarea.setOnSucceeded(evento -> {
+
             contenido.setDisable(false);
 
-            estado.setText(
-                    "Expediente generado correctamente: " +
-                            tarea.getValue()
-            );
+            estado.setText("Expediente generado correctamente.");
 
-            Alert alerta = new Alert(
-                    Alert.AlertType.INFORMATION,
-                    "El expediente PDF se generó correctamente."
-            );
+            VistaPreviaReporte vista = new VistaPreviaReporte();
 
-            alerta.initOwner(ventana);
-            alerta.showAndWait();
+            vista.mostrar(tarea.getValue(), ventana, reporteService);
         });
 
         tarea.setOnFailed(evento -> {
+
             contenido.setDisable(false);
 
             Throwable error = tarea.getException();
-            System.getLogger(PacienteController.class.getName()).log(
-                    System.Logger.Level.ERROR, "No se pudo generar el expediente PDF.", error);
+
+            System.getLogger(PacienteController.class.getName())
+                    .log(
+                            System.Logger.Level.ERROR,
+                            "No se pudo generar el expediente.",
+                            error
+                    );
 
             Alert alerta = new Alert(
                     Alert.AlertType.ERROR,
@@ -148,12 +126,11 @@ public final class PacienteController {
             alerta.initOwner(ventana);
             alerta.showAndWait();
 
-            estado.setText("No se pudo generar el expediente PDF.");
+            estado.setText("No se pudo generar el expediente.");
         });
 
         executor.execute(tarea);
     }
-
 
     @FXML
     private void initialize() {

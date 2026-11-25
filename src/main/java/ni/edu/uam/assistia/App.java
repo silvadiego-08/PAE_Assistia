@@ -95,6 +95,7 @@ public class App extends Application {
         stage.setMinWidth(920);
         stage.setMinHeight(580);
         stage.setTitle("Assistia");
+        stage.setMaximized(true);
         stage.show();
         navInicio.requestFocus();
     }
@@ -108,6 +109,7 @@ public class App extends Application {
         pagina.setFitToWidth(true);
         pagina.setFitToHeight(true);
         pagina.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        pagina.setAccessibleText(enlace.getText());
         pagina.setAccessibleText(enlace.getText());
         enlace.setOnAction(evento -> {
             try {

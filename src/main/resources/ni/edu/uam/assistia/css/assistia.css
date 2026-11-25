@@ -342,3 +342,93 @@
 .assistia .table-row-cell:filled:selected {
     -fx-background-color: #c9e8db;
 }
+
+/* Vista previa del expediente médico */
+
+.assistia.vista-reporte {
+    -fx-background-color: #f4f7f5;
+}
+
+.vista-reporte .barra-herramientas {
+    -fx-background-color: #ffffff;
+    -fx-border-color: -assistia-soft-line;
+    -fx-border-width: 0 0 1 0;
+}
+
+.vista-reporte .barra-acciones {
+    -fx-background-color: #ffffff;
+    -fx-border-color: -assistia-soft-line;
+    -fx-border-width: 1 0 0 0;
+}
+
+.vista-reporte .visor-reporte,
+.vista-reporte .visor-reporte > .viewport {
+    -fx-background-color: #dce6e1;
+}
+
+.vista-reporte .contenedor-hoja {
+    -fx-background-color: #dce6e1;
+}
+
+.vista-reporte .image-view {
+    -fx-effect: dropshadow(
+            gaussian, rgba(0, 0, 0, 0.18), 15, 0, 0, 4
+    );
+}
+
+.vista-reporte .barra-herramientas .label {
+    -fx-font-weight: bold;
+}
+
+.vista-reporte .button {
+    -fx-background-insets: 0;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-width: 2px;
+    -fx-border-color: -assistia-line;
+    -fx-background-color: #edf5f0;
+    -fx-text-fill: -assistia-ink;
+    -fx-min-height: 44px;
+    -fx-padding: 7 13;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.vista-reporte .button:hover {
+    -fx-background-color: #ddeee5;
+}
+
+.vista-reporte .boton-pdf {
+    -fx-background-color: #fff3ef;
+    -fx-border-color: #b67b70;
+    -fx-text-fill: #8b3027;
+}
+
+.vista-reporte .boton-pdf:hover {
+    -fx-background-color: #fbe4dc;
+}
+
+.vista-reporte .boton-excel {
+    -fx-background-color: -assistia-green;
+    -fx-border-color: -assistia-green;
+    -fx-text-fill: #ffffff;
+}
+
+.vista-reporte .boton-excel:hover {
+    -fx-background-color: #104737;
+}
+
+.vista-reporte .boton-cerrar {
+    -fx-background-color: #edf5f0;
+    -fx-text-fill: -assistia-ink;
+}
+
+.vista-reporte .button:focused {
+    -fx-border-color: -assistia-focus;
+}
+
+.vista-reporte .button:disabled {
+    -fx-opacity: 0.45;
+    -fx-cursor: default;
+}
+
