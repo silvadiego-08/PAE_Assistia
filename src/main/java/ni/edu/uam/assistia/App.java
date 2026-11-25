@@ -95,6 +95,7 @@ public class App extends Application {
         stage.setMinWidth(920);
         stage.setMinHeight(580);
         stage.setTitle("Assistia");
+        stage.setMaximized(true);
         stage.show();
         navInicio.requestFocus();
     }
