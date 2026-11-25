@@ -38,16 +38,11 @@ public class ReportePacienteService {
 
     private JasperReport plantillaCompilada;
 
-    public Path generarPdf(Long pacienteId, Path destino) {
+    public JasperPrint generarReporte(Long pacienteId) {
 
         if (pacienteId == null || pacienteId <= 0) {
             throw new IllegalArgumentException(
                     "Seleccione un paciente válido.");
-        }
-
-        if (destino == null) {
-            throw new IllegalArgumentException(
-                    "Seleccione dónde guardar el archivo PDF.");
         }
 
         try {
@@ -74,13 +69,33 @@ public class ReportePacienteService {
             JRBeanCollectionDataSource fuente =
                     new JRBeanCollectionDataSource(datos.filas());
 
-            JasperPrint impreso =
-                    JasperFillManager.fillReport(
-                            reporte,
-                            parametros,
-                            fuente
-                    );
+            return JasperFillManager.fillReport(
+                    reporte,
+                    parametros,
+                    fuente
+            );
 
+        } catch (JRException | IOException error) {
+            throw new ReporteException(
+                    "No se pudo generar el expediente del paciente.",
+                    error
+            );
+        }
+    }
+
+    public Path exportarPdf(JasperPrint impreso, Path destino) {
+
+        if (impreso == null) {
+            throw new IllegalArgumentException(
+                    "No existe un reporte generado.");
+        }
+
+        if (destino == null) {
+            throw new IllegalArgumentException(
+                    "Seleccione dónde guardar el archivo PDF.");
+        }
+
+        try {
             Path ruta = destino.toAbsolutePath();
 
             if (ruta.getParent() != null) {
@@ -95,12 +110,24 @@ public class ReportePacienteService {
             return ruta;
 
         } catch (JRException | IOException error) {
-
             throw new ReporteException(
-                    "No se pudo generar el expediente PDF del paciente.",
+                    "No se pudo exportar el expediente PDF.",
                     error
             );
         }
+    }
+
+    public Path generarPdf(Long pacienteId, Path destino) {
+
+        if (destino == null) {
+            throw new IllegalArgumentException(
+                    "Seleccione dónde guardar el archivo PDF.");
+        }
+
+        return exportarPdf(
+                generarReporte(pacienteId),
+                destino
+        );
     }
 
     private DatosReporte obtenerDatos(Long pacienteId) {
