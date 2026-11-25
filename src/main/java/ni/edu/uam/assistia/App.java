@@ -115,6 +115,8 @@ public class App extends Application {
             try {
                 if (pagina.getContent() == null) {
                     pagina.setContent(vista.load());
+                } else if (vista.getController() instanceof TratamientoController controlador) {
+                    controlador.actualizarCatalogos();
                 }
                 mostrar(enlace, pagina);
             } catch (IOException error) {
