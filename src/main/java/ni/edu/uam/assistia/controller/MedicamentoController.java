@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
@@ -20,6 +21,7 @@ import javafx.scene.layout.HBox;
 public class MedicamentoController {
 
     @FXML private TextField txtNombre, txtPrincipioActivo, txtPresentacion, txtConcentracion;
+    @FXML private TextArea txtDescripcion;
     @FXML private TableView<Medicamento> tabla;
     @FXML private TableColumn<Medicamento, String> colNombre, colPrincipio, colPresentacion, colConcentracion;
     @FXML private HBox barraAcciones;
@@ -28,7 +30,7 @@ public class MedicamentoController {
     @FXML private Button btnBuscar, btnUsarResultado;
     @FXML private Label lblEstadoBusqueda;
     @FXML private TableView<RxNormResultado> tablaResultados;
-    @FXML private TableColumn<RxNormResultado, String> colResultadoNombre, colResultadoRxcui;
+    @FXML private TableColumn<RxNormResultado, String> colResultadoNombre, colResultadoDosis;
     @FXML private HBox barraBusqueda;
     @FXML private TitledPane panelBusqueda;
 
@@ -54,7 +56,7 @@ public class MedicamentoController {
         colConcentracion.setCellValueFactory(d -> new ReadOnlyStringWrapper(d.getValue().getConcentracion()));
 
         colResultadoNombre.setCellValueFactory(d -> new ReadOnlyStringWrapper(d.getValue().nombre()));
-        colResultadoRxcui.setCellValueFactory(d -> new ReadOnlyStringWrapper(d.getValue().rxcui()));
+        colResultadoDosis.setCellValueFactory(d -> new ReadOnlyStringWrapper(d.getValue().dosis()));
         tablaResultados.setPlaceholder(new Label("Los resultados de RxNorm aparecerán aquí."));
         btnUsarResultado.disableProperty().bind(
                 tablaResultados.getSelectionModel().selectedItemProperty().isNull());
@@ -66,6 +68,7 @@ public class MedicamentoController {
                 txtPrincipioActivo.setText(sel.getPrincipioActivo());
                 txtPresentacion.setText(sel.getPresentacion());
                 txtConcentracion.setText(sel.getConcentracion());
+                txtDescripcion.setText(sel.getDescripcion());
             }
         });
         recargar();
@@ -78,9 +81,10 @@ public class MedicamentoController {
             return;
         }
         String nombre = txtNombre.getText(), principio = txtPrincipioActivo.getText(),
-               presentacion = txtPresentacion.getText(), concentracion = txtConcentracion.getText();
+               presentacion = txtPresentacion.getText(), concentracion = txtConcentracion.getText(),
+               descripcion = txtDescripcion.getText();
         async.accion(
-                () -> service.registrar(nombre, principio, presentacion, concentracion),
+                () -> service.registrar(nombre, principio, presentacion, concentracion, descripcion),
                 () -> {
                     limpiar();
                     recargar();
@@ -98,9 +102,10 @@ public class MedicamentoController {
         }
         Long id = sel.getId();
         String nombre = txtNombre.getText(), principio = txtPrincipioActivo.getText(),
-               presentacion = txtPresentacion.getText(), concentracion = txtConcentracion.getText();
+               presentacion = txtPresentacion.getText(), concentracion = txtConcentracion.getText(),
+               descripcion = txtDescripcion.getText();
         async.accion(
-                () -> service.actualizar(id, nombre, principio, presentacion, concentracion),
+                () -> service.actualizar(id, nombre, principio, presentacion, concentracion, descripcion),
                 () -> {
                     limpiar();
                     recargar();
@@ -179,12 +184,13 @@ public class MedicamentoController {
         // Es un registro nuevo: se quita cualquier selección del catálogo.
         tabla.getSelectionModel().clearSelection();
         txtNombre.setText(seleccionado.nombre());
-        txtPrincipioActivo.clear();
+        txtPrincipioActivo.setText(seleccionado.nombre());
+        txtConcentracion.setText(seleccionado.dosis());
+        txtDescripcion.setText(seleccionado.descripcion());
         txtPresentacion.clear();
-        txtConcentracion.clear();
-        lblEstadoBusqueda.setText("Nombre copiado. Completa los demás campos y presiona «Guardar».");
+        lblEstadoBusqueda.setText("Datos copiados. Revisa la presentación y presiona «Guardar».");
         panelBusqueda.setExpanded(false);
-        txtNombre.requestFocus();
+        txtPresentacion.requestFocus();
     }
 
     private void limpiar() {
@@ -193,6 +199,7 @@ public class MedicamentoController {
         txtPrincipioActivo.clear();
         txtPresentacion.clear();
         txtConcentracion.clear();
+        txtDescripcion.clear();
         txtNombre.requestFocus();
     }
 

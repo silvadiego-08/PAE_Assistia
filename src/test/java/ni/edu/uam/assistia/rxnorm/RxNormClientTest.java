@@ -13,7 +13,7 @@ class RxNormClientTest {
     private final RxNormClient client = new RxNormClient();
 
     @Test
-    void eliminaDuplicadosPorRxcuiYConservaElOrden() {
+    void limpiaNombresFiltraPacksYCombinacionesYExtraeDosis() {
         String json = """
                 {
                   "drugGroup": {
@@ -21,23 +21,29 @@ class RxNormClientTest {
                       {
                         "tty": "BPCK",
                         "conceptProperties": [
-                          {"rxcui": "750149", "name": "Z-PAK"},
-                          {"rxcui": "750157", "name": "TRI-PAK"}
+                          {"rxcui": "1", "name": "{1 (acetaminophen 500 MG) } Pack"}
                         ]
                       },
-                      {"tty": "GPCK"},
                       {
-                        "tty": "SCD",
+                        "tty": "GPCK",
                         "conceptProperties": [
-                          {"rxcui": "750149", "name": "Z-PAK repetido"},
-                          {"rxcui": "105260", "name": "Suspensión oral"}
+                          {"rxcui": "2", "name": "{1 (acetaminophen 500 MG) } Pack"}
                         ]
                       },
                       {
                         "tty": "SBD",
                         "conceptProperties": [
-                          {"rxcui": null, "name": "Sin identificador"},
-                          {"rxcui": "999", "name": "   "}
+                          {"rxcui": "3", "name": "acetaminophen 32 MG/ML Oral Solution [Bactimicina]"},
+                          {"rxcui": "4", "name": "acetaminophen 500 MG / chlorpheniramine maleate 2 MG Oral Tablet"}
+                        ]
+                      },
+                      {
+                        "tty": "SCD",
+                        "conceptProperties": [
+                          {"rxcui": "5", "name": "acetaminophen 500 MG Oral Tablet"},
+                          {"rxcui": "6", "name": "acetaminophen 500 MG Oral Tablet"},
+                          {"rxcui": "7", "name": "acetaminophen 500 MG / aspirin 250 MG Oral Tablet"},
+                          {"rxcui": "8", "name": "acetaminophen 500 MG/5 ML Oral Solution"}
                         ]
                       }
                     ]
@@ -48,9 +54,12 @@ class RxNormClientTest {
         List<RxNormResultado> resultados = client.parsear(json);
 
         assertEquals(List.of(
-                new RxNormResultado("750149", "Z-PAK"),
-                new RxNormResultado("750157", "TRI-PAK"),
-                new RxNormResultado("105260", "Suspensión oral")
+                new RxNormResultado("3", "acetaminophen", "32 MG/ML",
+                        "acetaminophen 32 MG/ML Oral Solution [Bactimicina]"),
+                new RxNormResultado("5", "acetaminophen", "500 MG",
+                        "acetaminophen 500 MG Oral Tablet"),
+                new RxNormResultado("8", "acetaminophen", "500 MG/5 ML",
+                        "acetaminophen 500 MG/5 ML Oral Solution")
         ), resultados);
     }
 

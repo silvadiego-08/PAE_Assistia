@@ -18,8 +18,13 @@ public class MedicamentoService {
     }
 
     public Medicamento registrar(String nombre, String principioActivo, String presentacion, String concentracion) {
+        return registrar(nombre, principioActivo, presentacion, concentracion, null);
+    }
+
+    public Medicamento registrar(String nombre, String principioActivo, String presentacion,
+                                 String concentracion, String descripcion) {
         Medicamento m = new Medicamento();
-        aplicar(m, nombre, principioActivo, presentacion, concentracion);
+        aplicar(m, nombre, principioActivo, presentacion, concentracion, descripcion);
         try {
             dao.crear(m);
         } catch (RegistroDuplicadoException e) {
@@ -29,12 +34,17 @@ public class MedicamentoService {
     }
 
     public void actualizar(Long id, String nombre, String principioActivo, String presentacion, String concentracion) {
+        actualizar(id, nombre, principioActivo, presentacion, concentracion, null);
+    }
+
+    public void actualizar(Long id, String nombre, String principioActivo, String presentacion,
+                           String concentracion, String descripcion) {
         if (id == null) {
             throw new ValidacionException("Seleccione un medicamento de la tabla antes de actualizar.");
         }
         Medicamento datos = new Medicamento();
         datos.setId(id);
-        aplicar(datos, nombre, principioActivo, presentacion, concentracion);
+        aplicar(datos, nombre, principioActivo, presentacion, concentracion, descripcion);
         try {
             dao.actualizar(datos);
         } catch (RegistroDuplicadoException e) {
@@ -56,11 +66,17 @@ public class MedicamentoService {
     }
 
     private static void aplicar(Medicamento m, String nombre, String principioActivo,
-                                String presentacion, String concentracion) {
+                                String presentacion, String concentracion, String descripcion) {
         m.setNombre(Validador.obligatorio(nombre, "Nombre", 120));
         m.setPrincipioActivo(Validador.obligatorio(principioActivo, "Principio activo", 120));
         m.setPresentacion(Validador.obligatorio(presentacion, "Presentación", 60));
         m.setConcentracion(Validador.obligatorio(concentracion, "Concentración", 60));
+
+        String detalle = descripcion == null ? "" : descripcion.trim();
+        if (detalle.length() > 300) {
+            throw new ValidacionException("La descripción no puede superar 300 caracteres.");
+        }
+        m.setDescripcion(detalle.isEmpty() ? null : detalle);
     }
 
     private static RegistroDuplicadoException duplicado(Throwable causa) {

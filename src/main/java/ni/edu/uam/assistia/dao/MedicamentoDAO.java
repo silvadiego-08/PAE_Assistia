@@ -33,6 +33,7 @@ public class MedicamentoDAO {
             actual.setPrincipioActivo(datos.getPrincipioActivo());
             actual.setPresentacion(datos.getPresentacion());
             actual.setConcentracion(datos.getConcentracion());
+            actual.setDescripcion(datos.getDescripcion());
         });
     }
 
