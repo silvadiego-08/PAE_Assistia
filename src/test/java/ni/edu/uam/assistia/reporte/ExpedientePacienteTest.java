@@ -18,13 +18,16 @@ class ExpedientePacienteTest {
             var plantilla = JasperCompileManager.compileReport(entrada);
             String aviso = "Este paciente no tiene tratamientos registrados.";
             var vacio = textos(plantilla, List.of());
-            assertTrue(vacio.contains("Nombre: Paciente de prueba"));
+            assertTrue(vacio.contains("Nombres y apellidos: Paciente de prueba"));
             assertTrue(vacio.contains("Fecha de nacimiento: 01/02/2000"));
-            assertTrue(vacio.contains("Teléfono: No registrado"));
+            assertTrue(vacio.contains("Teléfono de emergencia: No registrado"));
+            assertTrue(vacio.contains("Alergias: No registradas"));
+            assertTrue(vacio.contains("Historial médico: No registrado"));
+            assertTrue(vacio.contains("Elaborado por: Equipo Assistia"));
             assertTrue(vacio.contains(aviso));
 
             var conTratamiento = textos(plantilla, List.of(Map.of("medicamento", "Producto de prueba")));
-            assertTrue(conTratamiento.contains("Nombre: Paciente de prueba"));
+            assertTrue(conTratamiento.contains("Nombres y apellidos: Paciente de prueba"));
             assertTrue(conTratamiento.contains("Producto de prueba"));
             assertFalse(conTratamiento.contains(aviso));
         }
@@ -35,6 +38,9 @@ class ExpedientePacienteTest {
         parametros.put("NOMBRE_PACIENTE", "Paciente de prueba");
         parametros.put("FECHA_NACIMIENTO", "01/02/2000");
         parametros.put("TELEFONO", "No registrado");
+        parametros.put("ALERGIAS", "No registradas");
+        parametros.put("HISTORIAL_MEDICO", "No registrado");
+        parametros.put("ELABORADO_POR", "Equipo Assistia");
         JasperPrint impreso = JasperFillManager.fillReport(plantilla, parametros, new JRMapCollectionDataSource(filas));
         assertEquals(1, impreso.getPages().size());
         return impreso.getPages().getFirst().getElements().stream()

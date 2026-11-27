@@ -28,6 +28,7 @@ public class VistaPreviaReporteController {
 
     @FXML private Button anterior;
     @FXML private Button siguiente;
+    @FXML private Button btnImprimir;
     @FXML private Button descargarPdf;
     @FXML private Button descargarExcel;
 
@@ -54,6 +55,7 @@ public class VistaPreviaReporteController {
 
             anterior.setDisable(true);
             siguiente.setDisable(true);
+            btnImprimir.setDisable(true);
             descargarPdf.setDisable(true);
             descargarExcel.setDisable(true);
 
@@ -154,6 +156,43 @@ public class VistaPreviaReporteController {
         indicadorZoom.setText(
                 Math.round(zoom * 100) + "%"
         );
+    }
+
+    @FXML
+    private void imprimir() {
+
+        if (reporte == null || reporte.getPages().isEmpty()) {
+            return;
+        }
+
+        try {
+            // Imprime el JasperPrint que ya está en memoria.
+            // No genera ni descarga ningún PDF.
+            boolean enviado = JasperPrintManager.printReport(reporte, true);
+
+            if (enviado) {
+                mostrarAlerta(
+                        Alert.AlertType.INFORMATION,
+                        "Expediente enviado a la impresora."
+                );
+            }
+
+        } catch (JRException error) {
+
+            System.getLogger(
+                    VistaPreviaReporteController.class.getName()
+            ).log(
+                    System.Logger.Level.ERROR,
+                    "Error al imprimir el expediente",
+                    error
+            );
+
+            mostrarAlerta(
+                    Alert.AlertType.ERROR,
+                    "No se pudo imprimir el expediente:\n"
+                            + error.getMessage()
+            );
+        }
     }
 
     @FXML

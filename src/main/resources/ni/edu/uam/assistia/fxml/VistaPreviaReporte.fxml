@@ -91,6 +91,11 @@
                         left="15" right="15"/>
             </padding>
 
+            <Button fx:id="btnImprimir"
+                    text="Imprimir"
+                    styleClass="primary-button"
+                    onAction="#imprimir"/>
+
             <Button fx:id="descargarPdf"
                     text="Descargar PDF"
                     styleClass="boton-pdf"
