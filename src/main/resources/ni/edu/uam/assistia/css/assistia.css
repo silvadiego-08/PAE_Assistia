@@ -135,6 +135,12 @@
     -fx-text-fill: -assistia-muted;
 }
 
+.assistia .card-count {
+    -fx-text-fill: #215d4e;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
 .assistia .page-title {
     -fx-font-size: 32px;
     -fx-font-weight: bold;

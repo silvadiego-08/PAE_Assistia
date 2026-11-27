@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Label;
+import javafx.concurrent.Task;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -49,6 +51,13 @@ public class App extends Application {
     @FXML private Button abrirTratamientos;
     @FXML private Button abrirTomas;
 
+    @FXML private Label resumenPacientes;
+    @FXML private Label resumenCuidadores;
+    @FXML private Label resumenMedicamentos;
+    @FXML private Label resumenMedicos;
+    @FXML private Label resumenTratamientos;
+    @FXML private Label resumenTomas;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader principal = cargar("principal.fxml");
@@ -83,13 +92,18 @@ public class App extends Application {
         FXMLLoader tomas = cargar("tomas.fxml");
         tomas.setControllerFactory(tipo -> new RegistroTomaController(new PacienteDao(hibernate), async));
 
-        navInicio.setOnAction(evento -> mostrar(navInicio, inicio));
+        navInicio.setOnAction(evento -> {
+            mostrar(navInicio, inicio);
+            actualizarResumenes();
+        });
         conectar(navPacientes, abrirPacientes, pacientes);
         conectar(navCuidadores, abrirCuidadores, cuidadores);
         conectar(navMedicamentos, abrirMedicamentos, medicamentos);
         conectar(navMedicos, abrirMedicos, medicos);
         conectar(navTratamientos, abrirTratamientos, tratamientos);
         conectar(navTomas, abrirTomas, tomas);
+
+        actualizarResumenes();
 
         stage.setScene(escena);
         stage.setMinWidth(920);
@@ -98,6 +112,55 @@ public class App extends Application {
         stage.setMaximized(true);
         stage.show();
         navInicio.requestFocus();
+    }
+
+    private void actualizarResumenes() {
+        Task<Resumenes> tarea = new Task<>() {
+            @Override
+            protected Resumenes call() {
+                return hibernate.sessionFactory().fromTransaction(session -> new Resumenes(
+                        session.createSelectionQuery("select count(p) from Paciente p", Long.class).getSingleResult(),
+                        session.createSelectionQuery("select count(c) from Cuidador c", Long.class).getSingleResult(),
+                        session.createSelectionQuery("select count(m) from Medicamento m", Long.class).getSingleResult(),
+                        session.createSelectionQuery("select count(m) from Medico m", Long.class).getSingleResult(),
+                        session.createSelectionQuery("select count(t) from Tratamiento t", Long.class).getSingleResult(),
+                        session.createSelectionQuery("select count(t) from RegistroToma t", Long.class).getSingleResult()
+                ));
+            }
+        };
+
+        tarea.setOnSucceeded(evento -> {
+            Resumenes datos = tarea.getValue();
+            resumenPacientes.setText(datos.pacientes() + " registros");
+            resumenCuidadores.setText(datos.cuidadores() + " registros");
+            resumenMedicamentos.setText(datos.medicamentos() + " registros");
+            resumenMedicos.setText(datos.medicos() + " registros");
+            resumenTratamientos.setText(datos.tratamientos() + " registros");
+            resumenTomas.setText(datos.tomas() + " registros");
+        });
+
+        tarea.setOnFailed(evento -> {
+            resumenPacientes.setText("No disponible");
+            resumenCuidadores.setText("No disponible");
+            resumenMedicamentos.setText("No disponible");
+            resumenMedicos.setText("No disponible");
+            resumenTratamientos.setText("No disponible");
+            resumenTomas.setText("No disponible");
+            System.getLogger(App.class.getName()).log(
+                    System.Logger.Level.ERROR, "No se pudieron actualizar los contadores de Inicio.",
+                    tarea.getException());
+        });
+
+        baseDeDatos.execute(tarea);
+    }
+
+    private record Resumenes(
+            long pacientes,
+            long cuidadores,
+            long medicamentos,
+            long medicos,
+            long tratamientos,
+            long tomas) {
     }
 
     private FXMLLoader cargar(String archivo) {
@@ -115,8 +178,6 @@ public class App extends Application {
             try {
                 if (pagina.getContent() == null) {
                     pagina.setContent(vista.load());
-                } else if (vista.getController() instanceof TratamientoController controlador) {
-                    controlador.actualizarCatalogos();
                 }
                 mostrar(enlace, pagina);
             } catch (IOException error) {

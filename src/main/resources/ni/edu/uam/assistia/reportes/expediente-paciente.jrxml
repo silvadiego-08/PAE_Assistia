@@ -18,6 +18,9 @@
     <parameter name="NOMBRE_PACIENTE" class="java.lang.String"/>
     <parameter name="FECHA_NACIMIENTO" class="java.lang.String"/>
     <parameter name="TELEFONO" class="java.lang.String"/>
+    <parameter name="ALERGIAS" class="java.lang.String"/>
+    <parameter name="HISTORIAL_MEDICO" class="java.lang.String"/>
+    <parameter name="ELABORADO_POR" class="java.lang.String"/>
     <parameter name="GENERADO" class="java.lang.String"/>
 
     <field name="medicamento" class="java.lang.String"/>
@@ -33,7 +36,7 @@
     <field name="estado" class="java.lang.String"/>
 
     <title>
-        <band height="150">
+        <band height="235">
 
             <staticText>
                 <reportElement x="0" y="0" width="515" height="32"/>
@@ -68,7 +71,7 @@
             <textField>
                 <reportElement x="0" y="99" width="515" height="18"/>
                 <textFieldExpression><![CDATA[
-                    "Nombre: " + $P{NOMBRE_PACIENTE}
+                    "Nombres y apellidos: " + $P{NOMBRE_PACIENTE}
                 ]]></textFieldExpression>
             </textField>
 
@@ -82,7 +85,21 @@
             <textField>
                 <reportElement x="265" y="119" width="250" height="18"/>
                 <textFieldExpression><![CDATA[
-                    "Teléfono: " + $P{TELEFONO}
+                    "Teléfono de emergencia: " + $P{TELEFONO}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField textAdjust="StretchHeight">
+                <reportElement x="0" y="143" width="515" height="25"/>
+                <textFieldExpression><![CDATA[
+                    "Alergias: " + $P{ALERGIAS}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField textAdjust="StretchHeight">
+                <reportElement x="0" y="174" width="515" height="55"/>
+                <textFieldExpression><![CDATA[
+                    "Historial médico: " + $P{HISTORIAL_MEDICO}
                 ]]></textFieldExpression>
             </textField>
 
@@ -194,9 +211,9 @@
     </detail>
 
     <pageFooter>
-        <band height="25">
+        <band height="40">
             <textField>
-                <reportElement x="0" y="5" width="350" height="16"/>
+                <reportElement x="0" y="2" width="350" height="16"/>
                 <textElement>
                     <font size="8"/>
                 </textElement>
@@ -206,7 +223,17 @@
             </textField>
 
             <textField>
-                <reportElement x="415" y="5" width="100" height="16"/>
+                <reportElement x="0" y="19" width="350" height="16"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[
+                    "Elaborado por: " + $P{ELABORADO_POR}
+                ]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="415" y="2" width="100" height="16"/>
                 <textElement textAlignment="Right">
                     <font size="8"/>
                 </textElement>
