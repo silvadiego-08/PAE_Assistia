@@ -13,6 +13,10 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,18 +40,14 @@ public class ReportePacienteService {
     private static final DateTimeFormatter FECHA_HORA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+
     private JasperReport plantillaCompilada;
 
-    public Path generarPdf(Long pacienteId, Path destino) {
+    public JasperPrint generarReporte(Long pacienteId) {
 
         if (pacienteId == null || pacienteId <= 0) {
             throw new IllegalArgumentException(
                     "Seleccione un paciente válido.");
-        }
-
-        if (destino == null) {
-            throw new IllegalArgumentException(
-                    "Seleccione dónde guardar el archivo PDF.");
         }
 
         try {
@@ -74,13 +74,33 @@ public class ReportePacienteService {
             JRBeanCollectionDataSource fuente =
                     new JRBeanCollectionDataSource(datos.filas());
 
-            JasperPrint impreso =
-                    JasperFillManager.fillReport(
-                            reporte,
-                            parametros,
-                            fuente
-                    );
+            return JasperFillManager.fillReport(
+                    reporte,
+                    parametros,
+                    fuente
+            );
 
+        } catch (JRException | IOException error) {
+            throw new ReporteException(
+                    "No se pudo generar el expediente del paciente.",
+                    error
+            );
+        }
+    }
+
+    public Path exportarPdf(JasperPrint impreso, Path destino) {
+
+        if (impreso == null) {
+            throw new IllegalArgumentException(
+                    "No existe un reporte generado.");
+        }
+
+        if (destino == null) {
+            throw new IllegalArgumentException(
+                    "Seleccione dónde guardar el archivo PDF.");
+        }
+
+        try {
             Path ruta = destino.toAbsolutePath();
 
             if (ruta.getParent() != null) {
@@ -95,12 +115,24 @@ public class ReportePacienteService {
             return ruta;
 
         } catch (JRException | IOException error) {
-
             throw new ReporteException(
-                    "No se pudo generar el expediente PDF del paciente.",
+                    "No se pudo exportar el expediente PDF.",
                     error
             );
         }
+    }
+
+    public Path generarPdf(Long pacienteId, Path destino) {
+
+        if (destino == null) {
+            throw new IllegalArgumentException(
+                    "Seleccione dónde guardar el archivo PDF.");
+        }
+
+        return exportarPdf(
+                generarReporte(pacienteId),
+                destino
+        );
     }
 
     private DatosReporte obtenerDatos(Long pacienteId) {
@@ -210,4 +242,64 @@ public class ReportePacienteService {
             List<FilaPacienteReporte> filas
     ) {
     }
+
+    public Path exportarExcel(JasperPrint impreso, Path destino) {
+
+        if (impreso == null) {
+            throw new IllegalArgumentException(
+                    "No existe un reporte generado.");
+        }
+
+        if (destino == null) {
+            throw new IllegalArgumentException(
+                    "Seleccione dónde guardar el archivo Excel.");
+        }
+
+        try {
+            Path ruta = destino.toAbsolutePath();
+
+            if (ruta.getParent() != null) {
+                Files.createDirectories(ruta.getParent());
+            }
+
+            JRXlsxExporter exportador = new JRXlsxExporter();
+
+            exportador.setExporterInput(
+                    new SimpleExporterInput(impreso)
+            );
+
+            exportador.setExporterOutput(
+                    new SimpleOutputStreamExporterOutput(
+                            ruta.toFile()
+                    )
+            );
+
+            SimpleXlsxReportConfiguration configuracion =
+                    new SimpleXlsxReportConfiguration();
+
+            configuracion.setOnePagePerSheet(false);
+            configuracion.setDetectCellType(true);
+            configuracion.setRemoveEmptySpaceBetweenRows(true);
+            configuracion.setRemoveEmptySpaceBetweenColumns(true);
+            configuracion.setWhitePageBackground(false);
+
+            configuracion.setSheetNames(
+                    new String[]{"Expediente médico"}
+            );
+
+            exportador.setConfiguration(configuracion);
+
+            exportador.exportReport();
+
+            return ruta;
+
+        } catch (JRException | IOException error) {
+
+            throw new ReporteException(
+                    "No se pudo exportar el expediente a Excel.",
+                    error
+            );
+        }
+    }
+
 }
