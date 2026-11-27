@@ -17,16 +17,27 @@
                     <ColumnConstraints percentWidth="50"/>
                 </columnConstraints>
                 <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                    <Label text="Nombre" styleClass="field-label"/>
-                    <TextField fx:id="nombre" promptText="Nombre completo" accessibleText="Nombre"/>
+                    <Label text="Nombres y Apellidos" styleClass="field-label"/>
+                    <TextField fx:id="nombre" promptText="Nombres y apellidos" accessibleText="Nombres y Apellidos"/>
                 </VBox>
                 <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <Label text="Fecha de nacimiento" styleClass="field-label"/>
                     <DatePicker fx:id="nacimiento" promptText="Selecciona una fecha" accessibleText="Fecha de nacimiento" maxWidth="Infinity"/>
                 </VBox>
                 <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                    <Label text="Teléfono (opcional)" styleClass="field-label"/>
-                    <TextField fx:id="telefono" promptText="Número de teléfono" accessibleText="Teléfono (opcional)"/>
+                    <Label text="Teléfono de emergencia (opcional)" styleClass="field-label"/>
+                    <TextField fx:id="telefono" promptText="Número de teléfono de emergencia"
+                               accessibleText="Teléfono de emergencia (opcional)"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label text="Alergias" styleClass="field-label"/>
+                    <TextArea fx:id="alergias" promptText="Alergias conocidas o escriba: Ninguna"
+                              accessibleText="Alergias" prefRowCount="2" wrapText="true"/>
+                </VBox>
+                <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                    <Label text="Historial médico" styleClass="field-label"/>
+                    <TextArea fx:id="historialMedico" promptText="Enfermedades, padecimientos, antecedentes y observaciones relevantes"
+                              accessibleText="Historial médico" prefRowCount="3" wrapText="true"/>
                 </VBox>
             </GridPane>
             <HBox spacing="10" styleClass="actions">
@@ -48,9 +59,9 @@
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>
                 </columnResizePolicy>
                 <columns>
-                    <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="240" minWidth="160"/>
+                    <TableColumn fx:id="columnaNombre" text="Nombres y apellidos" prefWidth="240" minWidth="160"/>
                     <TableColumn fx:id="columnaNacimiento" text="Fecha de nacimiento" prefWidth="200" minWidth="185"/>
-                    <TableColumn fx:id="columnaTelefono" text="Teléfono" prefWidth="160" minWidth="100"/>
+                    <TableColumn fx:id="columnaTelefono" text="Teléfono de emergencia" prefWidth="190" minWidth="150"/>
                 </columns>
                 <placeholder><Label text="No hay pacientes para mostrar." styleClass="muted" wrapText="true"/></placeholder>
             </TableView>

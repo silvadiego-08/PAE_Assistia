@@ -19,13 +19,26 @@ public class Paciente {
     @Column(length = 25)
     private String telefono;
 
+    @Column(columnDefinition = "TEXT")
+    private String alergias;
+
+    @Column(name = "historial_medico", columnDefinition = "TEXT")
+    private String historialMedico;
+
     protected Paciente() {
     }
 
     public Paciente(String nombre, LocalDate fechaNacimiento, String telefono) {
+        this(nombre, fechaNacimiento, telefono, null, null);
+    }
+
+    public Paciente(String nombre, LocalDate fechaNacimiento, String telefono,
+                    String alergias, String historialMedico) {
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
         this.telefono = telefono;
+        this.alergias = alergias;
+        this.historialMedico = historialMedico;
     }
 
     public Long getId() {
@@ -44,9 +57,24 @@ public class Paciente {
         return telefono;
     }
 
+    public String getAlergias() {
+        return alergias;
+    }
+
+    public String getHistorialMedico() {
+        return historialMedico;
+    }
+
     public void actualizar(String nombre, LocalDate fechaNacimiento, String telefono) {
+        actualizar(nombre, fechaNacimiento, telefono, alergias, historialMedico);
+    }
+
+    public void actualizar(String nombre, LocalDate fechaNacimiento, String telefono,
+                           String alergias, String historialMedico) {
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
         this.telefono = telefono;
+        this.alergias = alergias;
+        this.historialMedico = historialMedico;
     }
 }

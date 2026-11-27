@@ -348,4 +348,29 @@ public class TratamientoController {
 
     private record DatosPantalla(List<Paciente> pacientes, List<Medico> medicos, List<Medicamento> medicamentos,
                                  List<Tratamiento> tratamientos, List<DetalleTratamiento> activos) { }
+
+
+    public void actualizarCatalogos() {
+        async.consultar(
+                () -> new DatosCatalogos(
+                        pacienteDao.listar(),
+                        medicoService.listar(),
+                        medicamentoService.listar()
+                ),
+                datos -> {
+                    cbPaciente.getItems().setAll(datos.pacientes());
+                    cbPacienteConsulta.getItems().setAll(datos.pacientes());
+                    cbMedico.getItems().setAll(datos.medicos());
+                    cbMedicamento.getItems().setAll(datos.medicamentos());
+                },
+                Alertas::mostrar,
+                pagina
+        );
+    }
+
+    private record DatosCatalogos(
+            List<Paciente> pacientes,
+            List<Medico> medicos,
+            List<Medicamento> medicamentos
+    ) {}
 }

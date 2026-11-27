@@ -17,7 +17,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import ni.edu.uam.assistia.model.AsignacionCuidador;
@@ -40,6 +42,8 @@ public final class PacienteController {
     @FXML private TextField nombre;
     @FXML private DatePicker nacimiento;
     @FXML private TextField telefono;
+    @FXML private TextArea alergias;
+    @FXML private TextArea historialMedico;
     @FXML private TableView<Paciente> tabla;
     @FXML private TableColumn<Paciente, String> columnaNombre;
     @FXML private TableColumn<Paciente, String> columnaNacimiento;
@@ -79,6 +83,27 @@ public final class PacienteController {
 
         Window ventana = contenido.getScene().getWindow();
 
+        TextInputDialog dialogoAutor = new TextInputDialog();
+        dialogoAutor.setTitle("Elaborar expediente");
+        dialogoAutor.setHeaderText("¿Quién está generando este reporte?");
+        dialogoAutor.setContentText("Nombre de quien elabora el reporte:");
+        dialogoAutor.getEditor().setPromptText("Nombres y apellidos");
+        dialogoAutor.initOwner(ventana);
+
+        var respuestaAutor = dialogoAutor.showAndWait();
+        if (respuestaAutor.isEmpty()) {
+            return;
+        }
+
+        String elaboradoPor = respuestaAutor.get().strip();
+        if (elaboradoPor.isBlank()) {
+            Alert alerta = new Alert(Alert.AlertType.WARNING,
+                    "Escribe el nombre de la persona que elaboró el reporte.");
+            alerta.initOwner(ventana);
+            alerta.showAndWait();
+            return;
+        }
+
         final Long pacienteId = paciente.getId();
 
         contenido.setDisable(true);
@@ -88,7 +113,7 @@ public final class PacienteController {
 
             @Override
             protected JasperPrint call() {
-                return reporteService.generarReporte(pacienteId);
+                return reporteService.generarReporte(pacienteId, elaboradoPor);
             }
         };
 
@@ -163,6 +188,9 @@ public final class PacienteController {
                 nombre.setText(seleccionado.getNombre());
                 nacimiento.setValue(seleccionado.getFechaNacimiento());
                 telefono.setText(seleccionado.getTelefono() == null ? "" : seleccionado.getTelefono());
+                alergias.setText(seleccionado.getAlergias() == null ? "" : seleccionado.getAlergias());
+                historialMedico.setText(seleccionado.getHistorialMedico() == null
+                        ? "" : seleccionado.getHistorialMedico());
                 cargarAsignaciones(seleccionado.getId(), "Paciente seleccionado.");
             }
         });
@@ -190,8 +218,11 @@ public final class PacienteController {
         String nombreActual = nombre.getText();
         LocalDate fecha = nacimiento.getValue();
         String telefonoActual = telefono.getText();
+        String alergiasActuales = alergias.getText();
+        String historialActual = historialMedico.getText();
         ejecutar(() -> {
-            pacientes.guardar(id, nombreActual, fecha, telefonoActual);
+            pacientes.guardar(id, nombreActual, fecha, telefonoActual,
+                    alergiasActuales, historialActual);
             return null;
         }, resultado -> cargarPacientes(id == null ? "Paciente guardado." : "Paciente actualizado."));
     }
@@ -211,6 +242,8 @@ public final class PacienteController {
         nombre.clear();
         nacimiento.setValue(null);
         telefono.clear();
+        alergias.clear();
+        historialMedico.clear();
     }
 
     @FXML private void recargar() {

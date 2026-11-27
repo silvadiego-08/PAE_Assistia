@@ -21,25 +21,35 @@ public final class PacienteDao {
                 .getResultList());
     }
 
-    public void guardar(Long id, String nombre, LocalDate nacimiento, String telefono) {
+    public void guardar(Long id, String nombre, LocalDate nacimiento, String telefono,
+                        String alergias, String historialMedico) {
         nombre = nombre.strip();
         telefono = telefono.strip();
+        alergias = alergias == null ? "" : alergias.strip();
+        historialMedico = historialMedico == null ? "" : historialMedico.strip();
+
         if (nombre.isEmpty() || nombre.length() > 120) {
-            throw new IllegalArgumentException("Escribe un nombre de entre 1 y 120 caracteres.");
+            throw new IllegalArgumentException("Escribe los nombres y apellidos (máximo 120 caracteres).");
         }
         if (nacimiento == null || nacimiento.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Selecciona una fecha de nacimiento que no sea futura.");
         }
         if (telefono.length() > 25) {
-            throw new IllegalArgumentException("El teléfono debe tener como máximo 25 caracteres.");
+            throw new IllegalArgumentException("El teléfono de emergencia debe tener como máximo 25 caracteres.");
         }
+
         String nombreFinal = nombre;
         String telefonoFinal = telefono.isEmpty() ? null : telefono;
+        String alergiasFinal = alergias.isEmpty() ? null : alergias;
+        String historialFinal = historialMedico.isEmpty() ? null : historialMedico;
+
         hibernate.sessionFactory().inTransaction(session -> {
             if (id == null) {
-                session.persist(new Paciente(nombreFinal, nacimiento, telefonoFinal));
+                session.persist(new Paciente(nombreFinal, nacimiento, telefonoFinal,
+                        alergiasFinal, historialFinal));
             } else {
-                buscarPaciente(session, id).actualizar(nombreFinal, nacimiento, telefonoFinal);
+                buscarPaciente(session, id).actualizar(nombreFinal, nacimiento, telefonoFinal,
+                        alergiasFinal, historialFinal);
             }
         });
     }

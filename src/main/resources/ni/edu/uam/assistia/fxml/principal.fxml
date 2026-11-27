@@ -49,6 +49,7 @@
                                     <VBox spacing="7">
                                         <Label text="Pacientes" styleClass="card-title"/>
                                         <Label text="Consulta los datos de cada paciente y sus cuidadores." styleClass="card-description" wrapText="true"/>
+                                        <Label fx:id="resumenPacientes" text="Cargando registros..." styleClass="card-count"/>
                                     </VBox>
                                 </graphic>
                             </Button>
@@ -60,6 +61,7 @@
                                     <VBox spacing="7">
                                         <Label text="Cuidadores" styleClass="card-title"/>
                                         <Label text="Gestiona los datos de las personas que brindan apoyo." styleClass="card-description" wrapText="true"/>
+                                        <Label fx:id="resumenCuidadores" text="Cargando registros..." styleClass="card-count"/>
                                     </VBox>
                                 </graphic>
                             </Button>
@@ -71,6 +73,7 @@
                                     <VBox spacing="7">
                                         <Label text="Medicamentos" styleClass="card-title"/>
                                         <Label text="Consulta y actualiza el catálogo de medicamentos." styleClass="card-description" wrapText="true"/>
+                                        <Label fx:id="resumenMedicamentos" text="Cargando registros..." styleClass="card-count"/>
                                     </VBox>
                                 </graphic>
                             </Button>
@@ -82,6 +85,7 @@
                                     <VBox spacing="7">
                                         <Label text="Médicos" styleClass="card-title"/>
                                         <Label text="Consulta los profesionales y sus especialidades." styleClass="card-description" wrapText="true"/>
+                                        <Label fx:id="resumenMedicos" text="Cargando registros..." styleClass="card-count"/>
                                     </VBox>
                                 </graphic>
                             </Button>
@@ -94,6 +98,7 @@
                                         <Label text="Tratamientos" styleClass="card-title"/>
                                         <Label text="Asigna medicamentos y consulta los tratamientos activos de cada paciente."
                                                styleClass="card-description" wrapText="true"/>
+                                        <Label fx:id="resumenTratamientos" text="Cargando registros..." styleClass="card-count"/>
                                     </VBox>
                                 </graphic>
                             </Button>
@@ -106,6 +111,7 @@
                                         <Label text="Registro de tomas" styleClass="card-title"/>
                                         <Label text="Programa tomas y consulta cuáles se realizaron."
                                                styleClass="card-description" wrapText="true"/>
+                                        <Label fx:id="resumenTomas" text="Cargando registros..." styleClass="card-count"/>
                                     </VBox>
                                 </graphic>
                             </Button>

@@ -44,10 +44,21 @@ public class ReportePacienteService {
     private JasperReport plantillaCompilada;
 
     public JasperPrint generarReporte(Long pacienteId) {
+        return generarReporte(pacienteId, "AssistIA");
+    }
+
+    public JasperPrint generarReporte(Long pacienteId, String elaboradoPor) {
 
         if (pacienteId == null || pacienteId <= 0) {
             throw new IllegalArgumentException(
                     "Seleccione un paciente válido.");
+        }
+
+        if (elaboradoPor == null || elaboradoPor.isBlank()) {
+            throw new IllegalArgumentException("Escribe quién elaboró el reporte.");
+        }
+        if (elaboradoPor.strip().length() > 120) {
+            throw new IllegalArgumentException("El nombre de quien elabora el reporte no debe superar 120 caracteres.");
         }
 
         try {
@@ -67,6 +78,20 @@ public class ReportePacienteService {
                     datos.paciente().getTelefono() == null
                             ? "No registrado"
                             : datos.paciente().getTelefono());
+
+            parametros.put("ALERGIAS",
+                    datos.paciente().getAlergias() == null
+                            || datos.paciente().getAlergias().isBlank()
+                            ? "No registradas"
+                            : datos.paciente().getAlergias());
+
+            parametros.put("HISTORIAL_MEDICO",
+                    datos.paciente().getHistorialMedico() == null
+                            || datos.paciente().getHistorialMedico().isBlank()
+                            ? "No registrado"
+                            : datos.paciente().getHistorialMedico());
+
+            parametros.put("ELABORADO_POR", elaboradoPor.strip());
 
             parametros.put("GENERADO",
                     FECHA_HORA.format(LocalDateTime.now()));
